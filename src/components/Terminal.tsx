@@ -74,7 +74,7 @@ export default function Terminal() {
 
     return (
         <div
-            className="w-full max-w-4xl mx-auto h-[400px] bg-black/80 border border-neon-green/30 font-mono text-sm relative overflow-hidden glass-card crt-flicker"
+            className="w-full max-w-4xl mx-auto h-[300px] md:h-[400px] bg-black/80 border border-neon-green/30 font-mono text-xs md:text-sm relative overflow-hidden glass-card crt-flicker"
             onClick={() => inputRef.current?.focus()}
         >
             {/* Terminal Header */}
@@ -90,7 +90,7 @@ export default function Terminal() {
             {/* Terminal Content */}
             <div
                 ref={scrollRef}
-                className="p-4 h-[330px] overflow-y-auto scrollbar-hide space-y-1"
+                className="p-4 h-[230px] md:h-[330px] overflow-y-auto scrollbar-hide space-y-1"
             >
                 <AnimatePresence>
                     {history.map((line, i) => (

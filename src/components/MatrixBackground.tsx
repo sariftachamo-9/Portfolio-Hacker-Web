@@ -45,6 +45,11 @@ export default function MatrixBackground() {
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+
+      const newColumns = Math.ceil(canvas.width / fontSize);
+      while (drops.length < newColumns) {
+        drops.push(Math.random() * -100); // Random negative start so they stagger in naturally
+      }
     };
 
     window.addEventListener('resize', handleResize);

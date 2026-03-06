@@ -4,7 +4,6 @@ import Admin from './pages/Admin';
 import Login from './pages/Login';
 import Cryptography from './pages/Cryptography';
 import React, { useState } from 'react';
-import AIAgent from './components/AIAgent';
 import LoadingScreen from './components/LoadingScreen';
 import { AnimatePresence } from 'motion/react';
 
@@ -46,7 +45,6 @@ export default function App() {
               />
             </Routes>
           </div>
-          <AIAgent />
         </div>
       </Router>
     </>

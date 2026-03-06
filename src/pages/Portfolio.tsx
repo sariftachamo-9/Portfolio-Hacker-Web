@@ -139,7 +139,7 @@ export default function Portfolio() {
                 <a
                   key={s.id}
                   href={`#${s.id}`}
-                  className="text-3xl font-bold hover:text-neon-green flex items-center gap-4"
+                  className="text-2xl sm:text-3xl font-bold hover:text-neon-green flex items-center gap-4"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span className="text-neon-green/20 text-sm">0{sections.indexOf(s)}</span>
@@ -165,7 +165,7 @@ export default function Portfolio() {
           </div>
 
           <h2 className="text-neon-green font-mono mb-2 tracking-widest uppercase text-xs">Computer Engineering | Cybersecurity Enthusiast | AI/ML | Web Dev</h2>
-          <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tighter glitch uppercase">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-8 tracking-tighter glitch uppercase">
             <span className="neon-text">SARIF</span> <br />
             <span className="neon-text">TACHAMO</span>
           </h1>
@@ -200,7 +200,7 @@ export default function Portfolio() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-32 px-6 max-w-7xl mx-auto">
+      <section id="about" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -297,7 +297,7 @@ export default function Portfolio() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-32 px-6 bg-neon-green/5">
+      <section id="skills" className="py-16 md:py-32 px-6 bg-neon-green/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 glitch">TECH_STACK</h2>
@@ -332,7 +332,7 @@ export default function Portfolio() {
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="py-32 px-6 max-w-7xl mx-auto">
+      <section id="experience" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
         <h2 className="text-4xl font-bold mb-16 text-center glitch">MISSION_LOGS</h2>
         <div className="space-y-4">
           {experience.map((exp, idx) => (
@@ -359,7 +359,7 @@ export default function Portfolio() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-32 px-6 bg-neon-green/5">
+      <section id="projects" className="py-16 md:py-32 px-6 bg-neon-green/5">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold mb-8 text-center glitch">CODE_REPOS</h2>
 
@@ -425,7 +425,7 @@ export default function Portfolio() {
       </section>
 
       {/* Blog Section */}
-      <section id="blog" className="py-32 px-6 max-w-7xl mx-auto">
+      <section id="blog" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
         <h2 className="text-4xl font-bold mb-16 text-center glitch">INTEL_FEED</h2>
         <div className="grid md:grid-cols-2 gap-6">
           {posts.map((post, idx) => (
@@ -452,7 +452,7 @@ export default function Portfolio() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-32 px-6 max-w-7xl mx-auto">
+      <section id="contact" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-16">
           <div>
             <h2 className="text-4xl font-bold mb-6 glitch">ESTABLISH_SIGNAL</h2>
@@ -536,7 +536,7 @@ export default function Portfolio() {
               }
             }}
           >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-[10px] uppercase tracking-widest text-neon-green/40">Sender_ID</label>
                 <input type="text" className="terminal-input w-full text-xs" required />
@@ -567,7 +567,7 @@ export default function Portfolio() {
       <footer className="py-16 border-t border-neon-green/20 bg-black/60 backdrop-blur-sm relative overflow-hidden">
         <div className="absolute inset-0 bg-grid opacity-5 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-6 flex flex-col items-center">
-          <div className="flex justify-center gap-10 mb-8">
+          <div className="flex justify-center gap-6 md:gap-10 mb-8">
             <Magnetic>
               <a href="https://github.com/sariftachamo-9" target="_blank" rel="noopener noreferrer" className="text-neon-green/40 hover:text-neon-green hover:drop-shadow-[0_0_8px_#00FF41] transition-all transform hover:scale-125">
                 <Github size={24} />

@@ -7,7 +7,6 @@ import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import db from './src/db.ts';
 import dotenv from 'dotenv';
-import { GoogleGenAI } from '@google/genai';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
@@ -51,12 +50,6 @@ async function startServer() {
     message: 'Too many requests from this IP, please try again later.'
   });
 
-  const chatLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minute
-    max: 10, // Limit each IP to 10 chat requests per minute
-    message: { error: 'ORACLE_BUSY: Too many signal requests. Cool down expected.' }
-  });
-
   const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 5, // Limit each IP to 5 failed login attempts per window
@@ -64,8 +57,7 @@ async function startServer() {
   });
 
   app.use('/api/', generalLimiter);
-  app.use('/api/chat', chatLimiter);
-  app.use('/api/contact', chatLimiter);
+  app.use('/api/contact', generalLimiter);
   app.use('/api/auth/login', loginLimiter);
 
   app.use(express.json());
@@ -374,38 +366,7 @@ async function startServer() {
     }
   });
 
-  // --- CHAT API (THE_ORACLE) ---
-  app.post('/api/chat', async (req, res) => {
-    const { message, history } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY;
 
-    if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') {
-      return res.status(500).json({ error: 'GEMINI_API_KEY not configured. Oracle is offline.' });
-    }
-
-    try {
-      const ai = new GoogleGenAI({
-        apiKey,
-        apiVersion: 'v1beta' // Supporting latest features
-      });
-
-      const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: [
-          ...history,
-          { role: 'user', parts: [{ text: message }] }
-        ],
-        config: {
-          systemInstruction: "You are 'THE_ORACLE', a mysterious, elite hacker-intelligence AI for a cybersecurity professional's portfolio. Your tone is professional, slightly cryptic, and uses hacker terminology (e.g., 'analyzing data packets', 'breaching firewall', 'secure signal established'). Keep responses concise and maintain the 'cyber' theme. Responses should be plain text, no markdown unless absolutely necessary."
-        }
-      });
-
-      res.json({ response: response.text });
-    } catch (error: any) {
-      console.error('Oracle Error:', error);
-      res.status(500).json({ error: 'SIGNAL_INTERRUPTED: Connection to Oracle lost.' });
-    }
-  });
 
   // --- VITE MIDDLEWARE ---
   if (process.env.NODE_ENV !== 'production') {
