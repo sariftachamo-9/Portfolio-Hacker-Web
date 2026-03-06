@@ -1,0 +1,242 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-neon-green: #00FF41;
+  /* Matrix Green */
+  --color-neon-red: #FF003C;
+  --color-neon-cyan: #00E5FF;
+  --color-neon-purple: #D600FF;
+  --color-glass: rgba(0, 20, 0, 0.2);
+  --color-glass-dark: rgba(0, 0, 0, 0.8);
+
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  --font-ops: "Orbitron", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-black text-neon-green selection:bg-neon-green selection:text-black font-mono;
+    overflow-x: hidden;
+  }
+
+  .bg-grid {
+    background-size: 50px 50px;
+    background-image:
+      linear-gradient(to right, rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-md bg-black/40 border border-neon-green/20 rounded-none shadow-[0_0_15px_rgba(0, 255, 65, 0.1)];
+  }
+
+  .neon-glow {
+    @apply shadow-[0_0_20px_rgba(0, 255, 65, 0.4)] border-neon-green/60;
+  }
+
+  .neon-text {
+    @apply text-neon-green drop-shadow-[0_0_8px_rgba(0, 255, 65, 0.8)];
+  }
+
+  .terminal-input {
+    @apply bg-black border-b border-neon-green/30 p-2 outline-none focus:border-neon-green transition-all text-neon-green placeholder:text-neon-green/20;
+  }
+}
+
+/* Scanline Effect */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom,
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+/* Glitch Animation */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-2px, 2px);
+  }
+
+  40% {
+    transform: translate(-2px, -2px);
+  }
+
+  60% {
+    transform: translate(2px, 2px);
+  }
+
+  80% {
+    transform: translate(2px, -2px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
+}
+
+.glitch:hover {
+  animation: glitch 0.2s infinite;
+  text-shadow: 2px 0 #ff003c, -2px 0 #00fff0;
+}
+
+/* CRT Flicker */
+@keyframes flicker {
+  0% {
+    opacity: 0.97;
+  }
+
+  5% {
+    opacity: 0.95;
+  }
+
+  10% {
+    opacity: 0.9;
+  }
+
+  15% {
+    opacity: 0.95;
+  }
+
+  20% {
+    opacity: 0.98;
+  }
+
+  25% {
+    opacity: 0.95;
+  }
+
+  30% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.crt-flicker {
+  animation: flicker 0.15s infinite;
+}
+
+.typing-cursor::after {
+  content: "_";
+  animation: blink 0.8s infinite;
+}
+
+@keyframes glitch-text {
+  0% {
+    transform: translate(0);
+    text-shadow: 2px 0 #ff0000, -2px 0 #00ffff;
+    opacity: 1;
+  }
+
+  25% {
+    transform: translate(-1px, 1px);
+    text-shadow: -2px 0 #ff0000, 2px 0 #00ffff;
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: translate(1px, -1px);
+    text-shadow: 2px 0 #0000ff, -2px 0 #ff0000;
+    opacity: 1;
+  }
+
+  75% {
+    transform: translate(-1px, -1px);
+    text-shadow: -2px 0 #00ffff, 2px 0 #ff0000;
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: translate(0);
+    text-shadow: 2px 0 #ff0000, -2px 0 #00ffff;
+    opacity: 1;
+  }
+}
+
+.glitch-text {
+  animation: glitch-text 0.15s infinite;
+}
+
+@keyframes noise {
+
+  0%,
+  100% {
+    background-position: 0 0;
+  }
+
+  10% {
+    background-position: -5% -10%;
+  }
+
+  20% {
+    background-position: -15% 5%;
+  }
+
+  30% {
+    background-position: 7% -25%;
+  }
+
+  40% {
+    background-position: 20% 25%;
+  }
+
+  50% {
+    background-position: -25% 10%;
+  }
+
+  60% {
+    background-position: 15% 5%;
+  }
+
+  70% {
+    background-position: 0% 15%;
+  }
+
+  80% {
+    background-position: 25% 35%;
+  }
+
+  90% {
+    background-position: -10% -5%;
+  }
+}
+
+.noise-bg {
+  background-image: url("https://media.giphy.com/media/oEI9uWUic9ZAs/giphy.gif");
+  background-repeat: repeat;
+  opacity: 0.05;
+  animation: noise 0.2s infinite;
+}
+
+@keyframes red-alert-flicker {
+
+  0%,
+  100% {
+    background-color: rgba(255, 0, 0, 0);
+  }
+
+  50% {
+    background-color: rgba(255, 0, 0, 0.1);
+  }
+}
+
+.red-alert-bg {
+  animation: red-alert-flicker 0.2s infinite;
+}
