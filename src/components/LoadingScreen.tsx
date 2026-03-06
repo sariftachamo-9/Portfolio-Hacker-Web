@@ -12,7 +12,7 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
     const [progress, setProgress] = useState(0);
 
     const line1 = "I CAN SEE YOU";
-    const line2 = "i will find you anywhere and anyhow, no matter what you do";
+    const line2 = "i will find you anywhere and anyhow,\nno matter what you do";
     const signalLine = "SIGNAL_DETECTED";
 
     useEffect(() => {
@@ -123,10 +123,11 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                         className="relative z-10 text-center"
                     >
                         <motion.h1
-                            className="text-7xl md:text-9xl font-black text-neon-green tracking-tighter"
+                            className="text-7xl md:text-9xl font-ops font-black text-neon-green tracking-tighter"
                             style={{
                                 textShadow: '0 0 20px rgba(0,255,65,1), 0 0 40px rgba(0,255,65,0.5), 0 0 60px rgba(255,255,255,0.3)',
-                                letterSpacing: '-0.05em'
+                                letterSpacing: '0.4em',
+                                marginLeft: '0.4em' // To offset the extra space on the right for centering
                             }}
                         >
                             SURPRISE
@@ -159,7 +160,7 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                                         key={`l1-${i}`}
                                         initial={{ opacity: 0, y: 10, scale: 0.8 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        className="text-4xl md:text-7xl font-black text-neon-green tracking-tighter"
+                                        className="text-5xl md:text-8xl font-black text-neon-green tracking-tighter"
                                         style={{ textShadow: '0 0 15px rgba(0,255,65,0.8), 0 0 30px rgba(255,255,255,0.2)' }}
                                     >
                                         {char === " " ? "\u00A0" : char}
@@ -169,17 +170,22 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
 
                             {/* Line 2 */}
                             <div className="flex flex-wrap justify-center gap-x-1 md:gap-x-2 min-h-[1em]">
-                                {text2.split("").map((char, i) => (
-                                    <motion.span
-                                        key={`l2-${i}`}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 0.6 }}
-                                        className="text-xs md:text-sm font-bold text-neon-green tracking-[0.5em] uppercase animate-pulse"
-                                        style={{ textShadow: '0 0 10px rgba(0,255,65,0.4)' }}
-                                    >
-                                        {char === " " ? "\u00A0" : char}
-                                    </motion.span>
-                                ))}
+                                {text2.split("").map((char, i) => {
+                                    if (char === '\n') {
+                                        return <div key={`l2-br-${i}`} className="w-full h-1 md:h-2" />;
+                                    }
+                                    return (
+                                        <motion.span
+                                            key={`l2-${i}`}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 0.6 }}
+                                            className="text-sm md:text-base font-bold text-neon-green tracking-[0.4em] md:tracking-[0.5em] uppercase animate-pulse"
+                                            style={{ textShadow: '0 0 10px rgba(0,255,65,0.4)' }}
+                                        >
+                                            {char === " " ? "\u00A0" : char}
+                                        </motion.span>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -189,7 +195,7 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                                     key={`sig-${i}`}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 0.8 }}
-                                    className="text-sm md:text-xl font-bold text-neon-green tracking-[0.4em] uppercase animate-pulse"
+                                    className="text-base md:text-2xl font-bold text-neon-green tracking-[0.4em] uppercase animate-pulse"
                                     style={{ textShadow: '0 0 15px rgba(0,255,65,0.6)' }}
                                 >
                                     {char === " " ? "\u00A0" : char}
@@ -208,12 +214,12 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                     >
                         <div className="space-y-4 mb-10">
                             {terminalLines.map((line, i) => (
-                                <div key={i} className="flex justify-between items-center text-xs md:text-sm">
+                                <div key={i} className="flex justify-between items-center text-sm md:text-base">
                                     <div className="flex gap-3 text-neon-green/90">
                                         <span className="text-neon-green font-bold">{'>'}</span>
                                         <span>{line.text}</span>
                                     </div>
-                                    <span className={`px-3 py-1 ${line.status === 'ok' ? 'bg-neon-green text-black' : 'bg-neon-green/20 text-neon-green animate-pulse'} font-bold text-[10px]`}>
+                                    <span className={`px-3 py-1 ${line.status === 'ok' ? 'bg-neon-green text-black' : 'bg-neon-green/20 text-neon-green animate-pulse'} font-bold text-[11px] md:text-xs`}>
                                         [{line.status.toUpperCase()}]
                                     </span>
                                 </div>
@@ -222,7 +228,7 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
 
                         {/* Progress Bar */}
                         <div className="space-y-3">
-                            <div className="flex justify-between text-[10px] uppercase tracking-[0.3em] text-neon-green/50">
+                            <div className="flex justify-between text-xs md:text-sm uppercase tracking-[0.3em] text-neon-green/50">
                                 <span>Core_System_Sync</span>
                                 <span>{progress}%</span>
                             </div>

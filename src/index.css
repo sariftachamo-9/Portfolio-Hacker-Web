@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Rubik+Glitch&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -12,6 +12,7 @@
 
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
   --font-ops: "Orbitron", sans-serif;
+  --font-glitch: "Rubik Glitch", system-ui;
 }
 
 @layer base {
@@ -44,6 +45,10 @@
 
   .terminal-input {
     @apply bg-black border-b border-neon-green/30 p-2 outline-none focus:border-neon-green transition-all text-neon-green placeholder:text-neon-green/20;
+  }
+
+  .font-glitch {
+    font-family: var(--font-glitch);
   }
 }
 

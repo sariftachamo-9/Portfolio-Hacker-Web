@@ -477,7 +477,7 @@ export default function Portfolio() {
                 <Linkedin className="text-neon-green" size={20} />
                 <div>
                   <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Net_ID</div>
-                  <a href="https://linkedin.com/in/sarif-tachamo" target="_blank" rel="noopener noreferrer" className="font-bold text-xs uppercase hover:text-neon-green">linkedin.com/in/sarif-tachamo</a>
+                  <a href="https://www.linkedin.com/in/sarif-tachamo-06b9b9248/" target="_blank" rel="noopener noreferrer" className="font-bold text-xs uppercase hover:text-neon-green">linkedin.com/in/sarif-tachamo</a>
                 </div>
               </motion.div>
               <motion.div 
@@ -574,7 +574,7 @@ export default function Portfolio() {
               </a>
             </Magnetic>
             <Magnetic>
-              <a href="https://linkedin.com/in/sarif-tachamo" target="_blank" rel="noopener noreferrer" className="text-neon-green/40 hover:text-neon-green hover:drop-shadow-[0_0_8px_#00FF41] transition-all transform hover:scale-125">
+              <a href="https://www.linkedin.com/in/sarif-tachamo-06b9b9248/" target="_blank" rel="noopener noreferrer" className="text-neon-green/40 hover:text-neon-green hover:drop-shadow-[0_0_8px_#00FF41] transition-all transform hover:scale-125">
                 <Linkedin size={24} />
               </a>
             </Magnetic>
