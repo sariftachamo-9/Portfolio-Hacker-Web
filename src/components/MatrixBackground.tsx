@@ -14,7 +14,7 @@ export default function MatrixBackground() {
     canvas.height = window.innerHeight;
 
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?/ｦｱｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
-    const fontSize = 16;
+    const fontSize = 24;
     const columns = canvas.width / fontSize;
     const drops: number[] = [];
 
@@ -58,7 +58,7 @@ export default function MatrixBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 -z-10 opacity-20 pointer-events-none"
+      className="fixed inset-0 -z-10 opacity-40 pointer-events-none"
     />
   );
 }

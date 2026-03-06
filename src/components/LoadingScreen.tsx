@@ -148,8 +148,8 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                         exit={{ opacity: 0, scale: 1.1 }}
                         className="text-center px-6 relative z-10"
                     >
-                        {/* Ambient Blue Pulse */}
-                        <div className="fixed inset-0 blue-pulse-bg pointer-events-none -z-10" />
+                        {/* Ambient Green Pulse */}
+                        <div className="fixed inset-0 green-pulse-bg pointer-events-none -z-10" />
 
                         <div className="flex flex-col items-center gap-y-6 md:gap-y-10">
                             {/* Line 1 */}
@@ -209,11 +209,11 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                         <div className="space-y-4 mb-10">
                             {terminalLines.map((line, i) => (
                                 <div key={i} className="flex justify-between items-center text-xs md:text-sm">
-                                    <div className="flex gap-3 text-neon-cyan/90">
-                                        <span className="text-neon-purple font-bold">{'>'}</span>
+                                    <div className="flex gap-3 text-neon-green/90">
+                                        <span className="text-neon-green font-bold">{'>'}</span>
                                         <span>{line.text}</span>
                                     </div>
-                                    <span className={`px-3 py-1 ${line.status === 'ok' ? 'bg-neon-cyan text-black' : 'bg-neon-purple/20 text-neon-purple animate-pulse'} font-bold text-[10px]`}>
+                                    <span className={`px-3 py-1 ${line.status === 'ok' ? 'bg-neon-green text-black' : 'bg-neon-green/20 text-neon-green animate-pulse'} font-bold text-[10px]`}>
                                         [{line.status.toUpperCase()}]
                                     </span>
                                 </div>
@@ -222,13 +222,13 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
 
                         {/* Progress Bar */}
                         <div className="space-y-3">
-                            <div className="flex justify-between text-[10px] uppercase tracking-[0.3em] text-neon-cyan/50">
+                            <div className="flex justify-between text-[10px] uppercase tracking-[0.3em] text-neon-green/50">
                                 <span>Core_System_Sync</span>
                                 <span>{progress}%</span>
                             </div>
-                            <div className="w-full h-1.5 bg-neon-cyan/5 border border-neon-cyan/10 relative">
+                            <div className="w-full h-1.5 bg-neon-green/5 border border-neon-green/10 relative">
                                 <motion.div
-                                    className="h-full bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-green shadow-[0_0_15px_rgba(0,229,255,0.5)]"
+                                    className="h-full bg-gradient-to-r from-neon-green via-neon-green/80 to-neon-green shadow-[0_0_15px_rgba(0,255,65,0.5)]"
                                     style={{ width: `${progress}%` }}
                                 />
                             </div>
@@ -248,7 +248,7 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                             transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
                             className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none"
                         >
-                            <Shield size={500} className="text-neon-cyan" />
+                            <Shield size={500} className="text-neon-green" />
                         </motion.div>
 
                         <div className="relative">
@@ -256,8 +256,8 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                                 initial={{ opacity: 0, letterSpacing: "1em" }}
                                 animate={{ opacity: 0.7, letterSpacing: "0.4em" }}
                                 transition={{ duration: 1 }}
-                                className="text-neon-cyan text-xl md:text-3xl font-bold uppercase"
-                                style={{ textShadow: '0 0 15px rgba(0,229,255,0.6)' }}
+                                className="text-neon-green text-xl md:text-3xl font-bold uppercase"
+                                style={{ textShadow: '0 0 15px rgba(0,255,65,0.6)' }}
                             >
                                 Welcome to Sarif tachamo's Web
                             </motion.p>

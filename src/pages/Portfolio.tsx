@@ -166,7 +166,7 @@ export default function Portfolio() {
 
           <h2 className="text-neon-green font-mono mb-2 tracking-widest uppercase text-xs">Computer Engineering | Cybersecurity Enthusiast | AI/ML | Web Dev</h2>
           <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tighter glitch uppercase">
-            SARIF <br />
+            <span className="neon-text">SARIF</span> <br />
             <span className="neon-text">TACHAMO</span>
           </h1>
 
@@ -209,11 +209,12 @@ export default function Portfolio() {
             className="relative"
           >
             <div className="absolute -inset-4 border border-neon-green/20 animate-pulse" />
-            <div className="glass-card p-2">
+            <div className="glass-card p-2 relative group">
+              <div className="absolute inset-0 bg-neon-green/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <img
-                src="https://picsum.photos/seed/sarif/800/800"
+                src="/hacker-mask.png"
                 alt="Sarif Tachamo"
-                className="grayscale contrast-125 brightness-75 hover:grayscale-0 transition-all duration-700 w-full aspect-square object-cover"
+                className="grayscale contrast-125 brightness-90 hover:grayscale-0 transition-all duration-700 w-full aspect-square object-cover shadow-[0_0_30px_rgba(0,255,65,0.2)]"
                 referrerPolicy="no-referrer"
               />
             </div>
@@ -469,20 +470,26 @@ export default function Portfolio() {
                   <div className="font-bold text-xs uppercase">sariftachamo.job@gmail.com</div>
                 </div>
               </div>
-              <div className="flex items-center gap-4 p-4 glass-card border-neon-green/10">
+              <motion.div 
+                whileHover={{ scale: 1.02, x: 5 }}
+                className="flex items-center gap-4 p-4 glass-card border-neon-green/20 hover:border-neon-green hover:neon-glow transition-all cursor-pointer"
+              >
                 <Linkedin className="text-neon-green" size={20} />
                 <div>
                   <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Net_ID</div>
                   <a href="https://linkedin.com/in/sarif-tachamo" target="_blank" rel="noopener noreferrer" className="font-bold text-xs uppercase hover:text-neon-green">linkedin.com/in/sarif-tachamo</a>
                 </div>
-              </div>
-              <div className="flex items-center gap-4 p-4 glass-card border-neon-green/10">
+              </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.02, x: 5 }}
+                className="flex items-center gap-4 p-4 glass-card border-neon-green/20 hover:border-neon-green hover:neon-glow transition-all cursor-pointer"
+              >
                 <Github className="text-neon-green" size={20} />
                 <div>
                   <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Repo_Log</div>
                   <a href="https://github.com/sariftachamo-9" target="_blank" rel="noopener noreferrer" className="font-bold text-xs uppercase hover:text-neon-green">github.com/sariftachamo-9</a>
                 </div>
-              </div>
+              </motion.div>
               <div className="flex items-center gap-4 p-4 glass-card border-neon-green/10">
                 <Shield className="text-neon-green" size={20} />
                 <div>
@@ -557,13 +564,40 @@ export default function Portfolio() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-neon-green/10 text-center text-neon-green/20 text-[10px] font-mono">
-        <div className="flex justify-center gap-8 mb-6">
-          <Github className="hover:text-neon-green cursor-pointer transition-colors" size={16} />
-          <Linkedin className="hover:text-neon-green cursor-pointer transition-colors" size={16} />
-          <Mail className="hover:text-neon-green cursor-pointer transition-colors" size={16} />
+      <footer className="py-16 border-t border-neon-green/20 bg-black/60 backdrop-blur-sm relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid opacity-5 pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center">
+          <div className="flex justify-center gap-10 mb-8">
+            <Magnetic>
+              <a href="https://github.com/sariftachamo-9" target="_blank" rel="noopener noreferrer" className="text-neon-green/40 hover:text-neon-green hover:drop-shadow-[0_0_8px_#00FF41] transition-all transform hover:scale-125">
+                <Github size={24} />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a href="https://linkedin.com/in/sarif-tachamo" target="_blank" rel="noopener noreferrer" className="text-neon-green/40 hover:text-neon-green hover:drop-shadow-[0_0_8px_#00FF41] transition-all transform hover:scale-125">
+                <Linkedin size={24} />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a href="mailto:sariftachamo.job@gmail.com" className="text-neon-green/40 hover:text-neon-green hover:drop-shadow-[0_0_8px_#00FF41] transition-all transform hover:scale-125">
+                <Mail size={24} />
+              </a>
+            </Magnetic>
+          </div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="h-0.5 w-12 bg-neon-green/20 mb-4" />
+            <p className="text-neon-green font-mono text-[10px] tracking-[0.4em] uppercase opacity-60">
+              SYSTEM_VERSION: 3.0.1 // encrypted_connection_active
+            </p>
+            <p className="text-neon-green/30 font-mono text-[8px] uppercase tracking-widest mt-2">
+              © 2026 SARIF TACHAMO // NO_RIGHTS_OBSCURED
+            </p>
+          </motion.div>
         </div>
-        <p>SYSTEM_VERSION: 3.0.1 // © 2026 SARIF TACHAMO // ALL_RIGHTS_RESERVED</p>
       </footer>
 
       {/* Login Portal Sign */}

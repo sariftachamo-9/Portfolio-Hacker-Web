@@ -30,15 +30,16 @@
 
 @layer components {
   .glass-card {
-    @apply backdrop-blur-md bg-black/40 border border-neon-green/20 rounded-none shadow-[0_0_15px_rgba(0, 255, 65, 0.1)];
+    @apply backdrop-blur-md bg-black/40 border border-neon-green/20 rounded-none shadow-[0_0_15px_var(--color-neon-green)];
   }
 
   .neon-glow {
-    @apply shadow-[0_0_20px_rgba(0, 255, 65, 0.4)] border-neon-green/60;
+    @apply shadow-[0_0_20px_var(--color-neon-green)] border-neon-green/60;
   }
 
   .neon-text {
-    @apply text-neon-green drop-shadow-[0_0_8px_rgba(0, 255, 65, 0.8)];
+    @apply text-neon-green;
+    text-shadow: 0 0 8px var(--color-neon-green);
   }
 
   .terminal-input {
@@ -239,4 +240,40 @@
 
 .red-alert-bg {
   animation: red-alert-flicker 0.2s infinite;
+}
+
+@keyframes blue-pulse {
+  0%, 100% { background-color: rgba(0, 229, 255, 0); }
+  50% { background-color: rgba(0, 229, 255, 0.05); }
+}
+
+.blue-pulse-bg {
+  animation: blue-pulse 3s ease-in-out infinite;
+}
+
+@keyframes green-pulse {
+  0%, 100% { background-color: rgba(0, 255, 65, 0); }
+  50% { background-color: rgba(0, 255, 65, 0.05); }
+}
+
+.green-pulse-bg {
+  animation: green-pulse 3s ease-in-out infinite;
+}
+
+@keyframes scanline-move {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.scanline-active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: rgba(0, 255, 65, 0.2);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+  animation: scanline-move 4s linear infinite;
+  pointer-events: none;
 }
