@@ -15,6 +15,7 @@ import {
   X,
   BookOpen,
   Calendar,
+  Award,
   Lock
 } from 'lucide-react';
 import { Project, Skill, Experience, Post, Education, Certification } from '../types';
@@ -61,11 +62,9 @@ export default function Portfolio() {
   const sections = [
     { id: 'hero', label: 'ROOT' },
     { id: 'about', label: 'BIO' },
-    { id: 'skills', label: 'STACK' },
     { id: 'experience', label: 'LOGS' },
-    { id: 'projects', label: 'REPOS' },
-    { id: 'blog', label: 'INTEL' },
-    { id: 'contact', label: 'SIGNAL' }
+    { id: 'projects', label: 'PAYLOADS' },
+    { id: 'blog', label: 'INTEL' }
   ];
 
   const filteredProjects = projectFilter === 'All'
@@ -173,7 +172,7 @@ export default function Portfolio() {
                 href="#projects"
                 className="px-8 py-3 border border-neon-green text-neon-green font-bold hover:bg-neon-green hover:text-black transition-all uppercase tracking-widest text-xs"
               >
-                [ VIEW_REPOS ]
+                [ VIEW_PAYLOADS ]
               </motion.a>
             </Magnetic>
             <Magnetic>
@@ -245,8 +244,60 @@ export default function Portfolio() {
                   <div className="text-[10px] uppercase tracking-widest text-neon-green/40">CYBER_TOOLS</div>
                 </div>
               </div>
+
+              {/* Languages & Interests */}
+              <div className="grid grid-cols-2 gap-8 pt-6 border-t border-neon-green/10">
+                <div>
+                  <h4 className="text-[10px] uppercase tracking-widest text-neon-green/40 mb-3 flex items-center gap-2">
+                    <Zap size={10} /> LANGUAGES
+                  </h4>
+                  <ul className="space-y-1 text-[10px] uppercase">
+                    <li>{">"} Nepali (Native)</li>
+                    <li>{">"} Newar (Native)</li>
+                    <li>{">"} English (Fluent)</li>
+                    <li>{">"} Hindi (Conversational)</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-[10px] uppercase tracking-widest text-neon-green/40 mb-3 flex items-center gap-2">
+                    <Zap size={10} /> INTERESTS
+                  </h4>
+                  <ul className="space-y-1 text-[10px] uppercase">
+                    <li>{">"} Ethical Hacking</li>
+                    <li>{">"} Cryptography</li>
+                    <li>{">"} Open-Source</li>
+                    <li>{">"} AI/ML Apps</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </motion.div>
+        </div>
+
+        {/* Achievements Section */}
+        <div className="mt-16 pt-16 border-t border-neon-green/10">
+          <h3 className="text-2xl font-bold mb-10 text-center glitch">MAJOR_ACHIEVEMENTS</h3>
+          <div className="grid md:grid-cols-4 gap-4">
+            {[
+              { title: "RESEARCH_PAPER", desc: "Published AI/ML paper at Kathmandu University (2023)" },
+              { title: "CYBER_TOOLS", desc: "Developed 10+ specialized security & crypto tools" },
+              { title: "PROD_APPS", desc: "Built 5+ production-ready web and mobile applications" },
+              { title: "DB_ARCHITECT", desc: "Designed 10+ complex database models for EMS/HMS" }
+            ].map((ach, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="glass-card p-6 border-neon-green/5 hover:border-neon-green/30 transition-all text-center"
+              >
+                <div className="text-neon-green mb-3 flex justify-center"><Award size={24} /></div>
+                <div className="text-[10px] font-bold mb-2 tracking-widest text-neon-green uppercase">{ach.title}</div>
+                <div className="text-[10px] text-neon-green/40 font-mono leading-tight">{ach.desc}</div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* Education & Certs */}
@@ -358,7 +409,7 @@ export default function Portfolio() {
       {/* Projects Section */}
       <section id="projects" className="py-16 md:py-32 px-6 bg-neon-green/5">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold mb-8 text-center glitch">CODE_REPOS</h2>
+          <h2 className="text-4xl font-bold mb-8 text-center glitch">CODE_PAYLOADS</h2>
 
           <div className="flex flex-wrap justify-center gap-2 mb-16">
             {categories.map(cat => (
@@ -483,7 +534,7 @@ export default function Portfolio() {
               >
                 <Github className="text-neon-green" size={20} />
                 <div>
-                  <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Repo_Log</div>
+                  <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Payload_Log</div>
                   <a href="https://github.com/sariftachamo-9" target="_blank" rel="noopener noreferrer" className="font-bold text-xs uppercase hover:text-neon-green">github.com/sariftachamo-9</a>
                 </div>
               </motion.div>
