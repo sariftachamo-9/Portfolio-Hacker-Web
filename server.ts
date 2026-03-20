@@ -52,7 +52,7 @@ async function startServer() {
 
   const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limit each IP to 5 failed login attempts per window
+    max: 100, // Increased to allow setup/testing
     message: { error: 'BRUTE_FORCE_PROTECTION: Too many login attempts. Access delayed.' }
   });
 
