@@ -63,7 +63,7 @@ export default function Portfolio() {
     { id: 'hero', label: 'ROOT' },
     { id: 'about', label: 'BIO' },
     { id: 'experience', label: 'LOGS' },
-    { id: 'projects', label: 'PAYLOADS' },
+    { id: 'projects', label: 'PROGRAMS' },
     { id: 'blog', label: 'INTEL' }
   ];
 
@@ -89,7 +89,7 @@ export default function Portfolio() {
               className="text-xl font-bold neon-text flex items-center gap-2 cursor-pointer"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
-              <Terminal size={20} /> [SYSTEM_OVERRIDE]
+              <Terminal size={20} /> [SARIF TACHAMO]
             </motion.div>
           </Magnetic>
 
@@ -172,7 +172,7 @@ export default function Portfolio() {
                 href="#projects"
                 className="px-8 py-3 border border-neon-green text-neon-green font-bold hover:bg-neon-green hover:text-black transition-all uppercase tracking-widest text-xs"
               >
-                [ VIEW_PAYLOADS ]
+                [ VIEW_PROGRAMS ]
               </motion.a>
             </Magnetic>
             <Magnetic>
@@ -222,7 +222,7 @@ export default function Portfolio() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl font-bold mb-8 flex items-center gap-4">
-              <span className="text-neon-green/20">01.</span> BIO_DATA
+              <span className="text-neon-green/20">01.</span> ABOUT_ME
             </h2>
             <div className="space-y-6 text-neon-green/70 text-sm leading-relaxed font-mono">
               <p className="border-l-2 border-neon-green/30 pl-4 uppercase">
@@ -409,7 +409,7 @@ export default function Portfolio() {
       {/* Projects Section */}
       <section id="projects" className="py-16 md:py-32 px-6 bg-neon-green/5">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold mb-8 text-center glitch">CODE_PAYLOADS</h2>
+          <h2 className="text-4xl font-bold mb-8 text-center glitch">CODE_PROGRAMS</h2>
 
           <div className="flex flex-wrap justify-center gap-2 mb-16">
             {categories.map(cat => (
@@ -534,17 +534,11 @@ export default function Portfolio() {
               >
                 <Github className="text-neon-green" size={20} />
                 <div>
-                  <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Payload_Log</div>
+                  <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Program_Log</div>
                   <a href="https://github.com/sariftachamo-9" target="_blank" rel="noopener noreferrer" className="font-bold text-xs uppercase hover:text-neon-green">github.com/sariftachamo-9</a>
                 </div>
               </motion.div>
-              <div className="flex items-center gap-4 p-4 glass-card border-neon-green/10">
-                <Shield className="text-neon-green" size={20} />
-                <div>
-                  <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Secure_Line</div>
-                  <div className="font-bold text-xs uppercase">+977-9840531722</div>
-                </div>
-              </div>
+
             </div>
           </div>
 
