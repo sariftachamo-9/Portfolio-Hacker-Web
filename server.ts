@@ -329,42 +329,6 @@ async function startServer() {
     res.json(messages);
   });
 
-  // --- GITHUB REPOS API ---
-  app.get('/api/github/repos', async (req, res) => {
-    const username = process.env.GITHUB_USERNAME;
-    if (!username) {
-      return res.status(500).json({ error: 'GITHUB_USERNAME not configured' });
-    }
-
-    try {
-      const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=10`, {
-        headers: {
-          'User-Agent': 'Portfolio-App'
-        }
-      });
-      if (!response.ok) {
-        console.error(`GitHub API error: ${response.status} ${response.statusText}`);
-        throw new Error(`GitHub API error: ${response.statusText}`);
-      }
-      const repos = (await response.json()) as any[];
-
-      const formattedRepos = repos.map((repo: any) => ({
-        id: `gh-${repo.id}`,
-        title: repo.name,
-        description: repo.description || 'No description provided.',
-        technologies: repo.language || 'Code',
-        github_link: repo.html_url,
-        live_link: repo.homepage || repo.html_url,
-        image: null,
-        is_visible: 1,
-        created_at: repo.created_at
-      }));
-
-      res.json(formattedRepos);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
 
 
 

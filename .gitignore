@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 node_modules/
 dist/
 build/
@@ -15,10 +14,9 @@ portfolio.db-journal
 # IDEs
 .vscode/
 .idea/
-=======
+
 # Logs
 logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -37,7 +35,6 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
 *.lcov
 
 # nyc test coverage
@@ -56,7 +53,6 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
@@ -155,4 +151,3 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
->>>>>>> 6bb1a09ece9344d0d1700807bd2b3c12d33165fc

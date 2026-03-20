@@ -38,12 +38,9 @@ export default function Portfolio() {
   const fullTerminalText = "> INITIALIZING SYSTEM... [OK]\n> LOADING ASSETS... [OK]\n> DECRYPTING PORTFOLIO... [OK]\n> ACCESS GRANTED.";
 
   useEffect(() => {
-    const fetchLocal = fetch('/api/projects').then(res => res.json());
-    const fetchGitHub = fetch('/api/github/repos').then(res => res.json()).catch(() => []);
-
-    Promise.all([fetchLocal, fetchGitHub]).then(([local, github]) => {
-      setProjects([...local, ...github]);
-    });
+    fetch('/api/projects')
+      .then(res => res.json())
+      .then(setProjects);
 
     fetch('/api/skills').then(res => res.json()).then(setSkills);
     fetch('/api/experience').then(res => res.json()).then(setExperience);
@@ -164,7 +161,7 @@ export default function Portfolio() {
             <TerminalComponent />
           </div>
 
-          <h2 className="text-neon-green font-mono mb-2 tracking-widest uppercase text-xs">Computer Engineering | Cybersecurity Enthusiast | AI/ML | Web Dev</h2>
+          <h2 className="text-neon-green font-mono mb-2 tracking-widest uppercase text-xs">Cybersecurity Expert | Cybersecurity Researcher | AI/ML Enthusiast | Web Developer</h2>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-8 tracking-tighter glitch uppercase">
             <span className="neon-text">SARIF</span> <br />
             <span className="neon-text">TACHAMO</span>
@@ -212,7 +209,7 @@ export default function Portfolio() {
             <div className="glass-card p-2 relative group">
               <div className="absolute inset-0 bg-neon-green/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <img
-                src="/hacker-mask.png"
+                src="/profile.JPG"
                 alt="Sarif Tachamo"
                 className="grayscale contrast-125 brightness-90 hover:grayscale-0 transition-all duration-700 w-full aspect-square object-cover shadow-[0_0_30px_rgba(0,255,65,0.2)]"
                 referrerPolicy="no-referrer"
@@ -231,12 +228,12 @@ export default function Portfolio() {
             <div className="space-y-6 text-neon-green/70 text-sm leading-relaxed font-mono">
               <p className="border-l-2 border-neon-green/30 pl-4 uppercase">
                 {">"} NAME: SARIF TACHAMO<br />
-                {">"} ROLE: COMPUTER_ENGINEERING_UNDERGRADUATE<br />
+                {">"} ROLE: CYBERSECURITY_EXPERT<br />
                 {">"} LOCATION: BHAKTAPUR, NEPAL<br />
                 {">"} STATUS: SECURING_SYSTEMS
               </p>
               <p>
-                Computer Engineering undergraduate with proven experience in full-stack development, AI/ML systems, and cybersecurity research. I build secure HR platforms, POS systems, and cryptographic tools with a focus on system automation and secure architecture.
+                Cybersecurity-focused computer engineering undergraduate with hands-on experience in ethical hacking, penetration testing, cryptography, and secure web/app development. Skilled in designing encrypted platforms, cyber threat simulations, and system automation tools.
               </p>
               <div className="grid grid-cols-2 gap-4 pt-4">
                 <div className="glass-card p-6 border-neon-green/10">
