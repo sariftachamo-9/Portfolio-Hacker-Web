@@ -170,6 +170,11 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                         clearInterval(progressInterval);
                         return 100;
                     }
+
+                    if (soundEnabledRef.current) {
+                        createKeySound(audioContextRef.current);
+                    }
+
                     return prev + 4;
                 });
             }, 80);
