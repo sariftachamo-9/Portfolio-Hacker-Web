@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { Lock, User, AlertCircle, Terminal } from 'lucide-react';
 import MatrixBackground from '../components/MatrixBackground';
 import CustomCursor from '../components/CustomCursor';
+import { useMechanicalClick } from '../hooks/useMechanicalClick';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -11,6 +12,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { handleClickStrong, handleClick } = useMechanicalClick();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,7 +106,8 @@ export default function Login() {
 
           <button
             disabled={loading}
-            className="w-full py-4 bg-neon-green text-black font-bold uppercase tracking-widest text-xs neon-glow hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+            onClick={handleClickStrong}
+            className="w-full py-4 bg-neon-green text-black font-bold uppercase tracking-widest text-xs neon-glow hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 btn-mechanical"
           >
             {loading ? 'AUTHENTICATING...' : '[ SIGN_IN ]'}
           </button>
@@ -112,8 +115,8 @@ export default function Login() {
 
         <div className="mt-8 text-center">
           <button
-            onClick={() => navigate('/')}
-            className="text-neon-green/40 hover:text-neon-green text-[10px] uppercase tracking-widest transition-colors"
+            onClick={(e) => { handleClick(e); navigate('/'); }}
+            className="text-neon-green/40 hover:text-neon-green text-[10px] uppercase tracking-widest transition-colors mechanical-btn"
           >
             ← RETURN_TO_PORTFOLIO
           </button>

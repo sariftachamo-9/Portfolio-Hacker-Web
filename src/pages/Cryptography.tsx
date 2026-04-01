@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Shield, Lock, Unlock, Key, RefreshCw, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MatrixBackground from '../components/MatrixBackground';
+import { useMechanicalClick } from '../hooks/useMechanicalClick';
 
 export default function Cryptography() {
     const [step, setStep] = useState(1);
@@ -11,6 +12,7 @@ export default function Cryptography() {
     const [plaintext, setPlaintext] = useState('');
     const [ciphertext, setCiphertext] = useState('');
     const [decrypted, setDecrypted] = useState('');
+    const { handleClickStrong } = useMechanicalClick();
 
     const generateKeys = () => {
         setIsGenerating(true);
@@ -74,9 +76,9 @@ export default function Cryptography() {
                         </p>
                         {!keys ? (
                             <button
-                                onClick={generateKeys}
+                                onClick={(e) => { handleClickStrong(e); generateKeys(); }}
                                 disabled={isGenerating}
-                                className="w-full py-4 bg-neon-green/10 border border-neon-green text-neon-green hover:bg-neon-green hover:text-black transition-all font-bold flex items-center justify-center gap-3"
+                                className="w-full py-4 bg-neon-green/10 border border-neon-green text-neon-green hover:bg-neon-green hover:text-black transition-all font-bold flex items-center justify-center gap-3 btn-mechanical"
                             >
                                 {isGenerating ? (
                                     <RefreshCw className="animate-spin" size={20} />
@@ -113,9 +115,9 @@ export default function Cryptography() {
                                 className="w-full bg-black/40 border border-neon-green/20 p-4 font-mono text-sm text-neon-green placeholder:text-neon-green/10 focus:border-neon-green outline-none h-24"
                             />
                             <button
-                                onClick={encrypt}
+                                onClick={(e) => { handleClickStrong(e); encrypt(); }}
                                 disabled={step < 2 || !plaintext}
-                                className="w-full py-3 border border-neon-green/50 text-neon-green hover:bg-neon-green hover:text-black disabled:border-white/10 disabled:text-white/10 transition-all font-bold flex items-center justify-center gap-3"
+                                className="w-full py-3 border border-neon-green/50 text-neon-green hover:bg-neon-green hover:text-black disabled:border-white/10 disabled:text-white/10 transition-all font-bold flex items-center justify-center gap-3 btn-mechanical"
                             >
                                 <Lock size={18} /> [ EXECUTE_RSA_ENCRYPTION ]
                             </button>
@@ -138,9 +140,9 @@ export default function Cryptography() {
                             <span className="text-neon-green/20">03.</span> DECRYPTION_PHASE
                         </h2>
                         <button
-                            onClick={decrypt}
+                            onClick={(e) => { handleClickStrong(e); decrypt(); }}
                             disabled={step < 3}
-                            className="w-full py-4 bg-neon-red/10 border border-neon-red/50 text-neon-red hover:bg-neon-red hover:text-white disabled:border-white/10 disabled:text-white/10 transition-all font-bold flex items-center justify-center gap-3"
+                            className="w-full py-4 bg-neon-red/10 border border-neon-red/50 text-neon-red hover:bg-neon-red hover:text-white disabled:border-white/10 disabled:text-white/10 transition-all font-bold flex items-center justify-center gap-3 btn-mechanical"
                         >
                             <Unlock size={20} /> [ BREACH_CIPHERTEXT ]
                         </button>

@@ -36,6 +36,7 @@ import { Toaster, toast } from 'sonner';
 
 import MatrixBackground from '../components/MatrixBackground';
 import CustomCursor from '../components/CustomCursor';
+import { useMechanicalClick } from '../hooks/useMechanicalClick';
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -50,6 +51,7 @@ export default function Admin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const navigate = useNavigate();
+  const { handleClick, handleClickStrong } = useMechanicalClick();
 
   const token = localStorage.getItem('admin_token');
 
@@ -194,8 +196,8 @@ export default function Admin() {
           {tabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-4 p-3 text-xs tracking-widest transition-all ${activeTab === tab.id ? 'bg-neon-green text-black font-bold' : 'hover:bg-neon-green/10 text-neon-green/60'}`}
+              onClick={(e) => { handleClick(e); setActiveTab(tab.id); }}
+              className={`w-full flex items-center gap-4 p-3 text-xs tracking-widest transition-all mechanical-btn ${activeTab === tab.id ? 'bg-neon-green text-black font-bold' : 'hover:bg-neon-green/10 text-neon-green/60'}`}
             >
               <tab.icon size={16} />
               {tab.label}
@@ -205,8 +207,8 @@ export default function Admin() {
 
         <div className="p-4 border-t border-neon-green/20">
           <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-4 p-3 text-xs tracking-widest text-red-500 hover:bg-red-500/10 transition-all"
+            onClick={(e) => { handleClick(e); handleLogout(); }}
+            className="w-full flex items-center gap-4 p-3 text-xs tracking-widest text-red-500 hover:bg-red-500/10 transition-all mechanical-btn"
           >
             <LogOut size={16} />
             TERMINATE_SESSION
@@ -220,8 +222,8 @@ export default function Admin() {
           <h1 className="text-3xl font-bold tracking-tighter glitch">./{activeTab.toUpperCase()}</h1>
           {activeTab !== 'dashboard' && activeTab !== 'messages' && (
             <button
-              onClick={() => { setEditingItem(null); setIsModalOpen(true); }}
-              className="flex items-center gap-2 px-6 py-2 border border-neon-green text-neon-green font-bold hover:bg-neon-green hover:text-black transition-all text-xs tracking-widest"
+              onClick={(e) => { handleClick(e); setEditingItem(null); setIsModalOpen(true); }}
+              className="flex items-center gap-2 px-6 py-2 border border-neon-green text-neon-green font-bold hover:bg-neon-green hover:text-black transition-all text-xs tracking-widest btn-mechanical"
             >
               <Plus size={16} /> NEW_ENTRY
             </button>
@@ -324,8 +326,8 @@ export default function Admin() {
                             </div>
                           </div>
                           <div className="flex gap-2">
-                            <button onClick={() => handleEdit(item)} className="p-2 hover:text-white transition-colors"><Edit size={16} /></button>
-                            <button onClick={() => handleDelete(activeTab, item.id)} className="p-2 hover:text-red-500 transition-colors"><Trash2 size={16} /></button>
+                            <button onClick={(e) => { handleClick(e); handleEdit(item); }} className="p-2 hover:text-white transition-colors icon-btn-mechanical"><Edit size={16} /></button>
+                            <button onClick={(e) => { handleClick(e); handleDelete(activeTab, item.id); }} className="p-2 hover:text-red-500 transition-colors icon-btn-mechanical"><Trash2 size={16} /></button>
                           </div>
                         </div>
                       ))}
@@ -354,7 +356,7 @@ export default function Admin() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
           <div className="glass-card w-full max-w-2xl p-10 relative border-neon-green/50">
-            <button onClick={() => setIsModalOpen(false)} className="absolute top-6 right-6 text-neon-green/40 hover:text-neon-green"><X /></button>
+            <button onClick={(e) => { handleClick(e); setIsModalOpen(false); }} className="absolute top-6 right-6 text-neon-green/40 hover:text-neon-green icon-btn-mechanical"><X /></button>
             <h2 className="text-2xl font-bold mb-8 glitch uppercase tracking-widest">
               {editingItem ? 'UPDATE' : 'CREATE'}_ENTRY: <span className="neon-text">{activeTab.slice(0, -1)}</span>
             </h2>
@@ -417,7 +419,7 @@ export default function Admin() {
                 </>
               )}
 
-              <button className="w-full py-4 bg-neon-green text-black font-bold uppercase tracking-widest text-xs neon-glow transition-all flex items-center justify-center gap-2">
+              <button onClick={handleClickStrong} className="w-full py-4 bg-neon-green text-black font-bold uppercase tracking-widest text-xs neon-glow transition-all flex items-center justify-center gap-2 btn-mechanical">
                 <Save size={16} /> {editingItem ? 'COMMIT_CHANGES' : 'PUSH_ENTRY'}
               </button>
             </form>

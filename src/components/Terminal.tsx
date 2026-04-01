@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useKeyboardSound } from '../hooks/useKeyboardSound';
 
 interface TerminalLine {
     type: 'input' | 'output' | 'error' | 'success';
@@ -14,6 +15,7 @@ export default function Terminal() {
     ]);
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const { playKeySound } = useKeyboardSound();
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -72,6 +74,12 @@ export default function Terminal() {
         }
     };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInput(e.target.value);
+        // Play keyboard sound for each character typed
+        playKeySound();
+    };
+
     return (
         <div
             className="w-full max-w-4xl mx-auto h-[300px] md:h-[400px] bg-black/80 border border-neon-green/30 font-mono text-xs md:text-sm relative overflow-hidden glass-card crt-flicker"
@@ -116,7 +124,7 @@ export default function Terminal() {
                         ref={inputRef}
                         type="text"
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={handleInputChange}
                         className="flex-1 bg-transparent border-none outline-none text-neon-green p-0 focus:ring-0"
                         autoFocus
                     />
@@ -124,7 +132,7 @@ export default function Terminal() {
             </div>
 
             {/* Scanline overlay */}
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]" />
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,255,255,0.06))] bg-[length:100%_4px,3px_100%]" />
         </div>
     );
 }

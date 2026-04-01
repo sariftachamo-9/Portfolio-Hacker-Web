@@ -23,6 +23,8 @@ import MatrixBackground from '../components/MatrixBackground';
 import CustomCursor from '../components/CustomCursor';
 import Magnetic from '../components/Magnetic';
 import TerminalComponent from '../components/Terminal';
+import { useKeyboardSound } from '../hooks/useKeyboardSound';
+import { useMechanicalClick } from '../hooks/useMechanicalClick';
 
 export default function Portfolio() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -37,6 +39,8 @@ export default function Portfolio() {
   const [projectFilter, setProjectFilter] = useState('All');
   const [terminalText, setTerminalText] = useState('');
   const fullTerminalText = "> INITIALIZING SYSTEM... [OK]\n> LOADING ASSETS... [OK]\n> DECRYPTING PORTFOLIO... [OK]\n> ACCESS GRANTED.";
+  const { playKeySound } = useKeyboardSound();
+  const { handleClick, handleClickStrong } = useMechanicalClick();
 
   useEffect(() => {
     fetch('/api/projects')
@@ -52,6 +56,8 @@ export default function Portfolio() {
     let i = 0;
     const interval = setInterval(() => {
       setTerminalText(fullTerminalText.slice(0, i));
+      // Play keyboard sound for each character
+      playKeySound();
       i++;
       if (i > fullTerminalText.length) clearInterval(interval);
     }, 30);
@@ -115,7 +121,7 @@ export default function Portfolio() {
           </div>
 
           {/* Mobile Toggle */}
-          <button className="md:hidden text-neon-green" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button className="md:hidden text-neon-green icon-btn-mechanical" onClick={(e) => { handleClick(e); setIsMenuOpen(!isMenuOpen); }}>
             {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
@@ -170,7 +176,8 @@ export default function Portfolio() {
             <Magnetic>
               <motion.a
                 href="#projects"
-                className="px-8 py-3 border border-neon-green text-neon-green font-bold hover:bg-neon-green hover:text-black transition-all uppercase tracking-widest text-xs"
+                onClick={handleClickStrong}
+                className="px-8 py-3 border border-neon-green text-neon-green font-bold hover:bg-neon-green hover:text-black transition-all uppercase tracking-widest text-xs btn-mechanical"
               >
                 [ VIEW_PROGRAMS ]
               </motion.a>
@@ -178,7 +185,8 @@ export default function Portfolio() {
             <Magnetic>
               <motion.a
                 href="#contact"
-                className="px-8 py-3 border border-neon-green/30 text-neon-green/50 font-bold hover:border-neon-green hover:text-neon-green transition-all uppercase tracking-widest text-xs"
+                onClick={handleClick}
+                className="px-8 py-3 border border-neon-green/30 text-neon-green/50 font-bold hover:border-neon-green hover:text-neon-green transition-all uppercase tracking-widest text-xs btn-mechanical"
               >
                 [ SEND_SIGNAL ]
               </motion.a>
@@ -415,8 +423,8 @@ export default function Portfolio() {
             {categories.map(cat => (
               <button
                 key={cat}
-                onClick={() => setProjectFilter(cat)}
-                className={`px-4 py-1 text-[10px] font-mono uppercase tracking-widest transition-all ${projectFilter === cat ? 'bg-neon-green text-black font-bold' : 'border border-neon-green/20 text-neon-green/40 hover:border-neon-green hover:text-neon-green'}`}
+                onClick={(e) => { handleClick(e); setProjectFilter(cat); }}
+                className={`px-4 py-1 text-[10px] font-mono uppercase tracking-widest transition-all mechanical-btn ${projectFilter === cat ? 'bg-neon-green text-black font-bold' : 'border border-neon-green/20 text-neon-green/40 hover:border-neon-green hover:text-neon-green'}`}
               >
                 [{cat}]
               </button>
@@ -443,12 +451,12 @@ export default function Portfolio() {
                     />
                     <div className="absolute inset-0 bg-neon-green/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
                       <Magnetic>
-                        <a href={project.github_link} className="p-3 bg-black border border-neon-green text-neon-green hover:bg-neon-green hover:text-black transition-all">
+                        <a href={project.github_link} onClick={handleClick} className="p-3 bg-black border border-neon-green text-neon-green hover:bg-neon-green hover:text-black transition-all icon-btn-mechanical">
                           <Github size={18} />
                         </a>
                       </Magnetic>
                       <Magnetic>
-                        <a href={project.live_link} className="p-3 bg-black border border-neon-green text-neon-green hover:bg-neon-green hover:text-black transition-all">
+                        <a href={project.live_link} onClick={handleClick} className="p-3 bg-black border border-neon-green text-neon-green hover:bg-neon-green hover:text-black transition-all icon-btn-mechanical">
                           <ExternalLink size={18} />
                         </a>
                       </Magnetic>
@@ -491,7 +499,7 @@ export default function Portfolio() {
               </div>
               <h3 className="text-xl font-bold mb-4 group-hover:text-neon-green transition-colors uppercase tracking-tighter">{post.title}</h3>
               <p className="text-neon-green/50 text-xs mb-6 leading-relaxed font-mono">{post.excerpt}</p>
-              <button className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all text-neon-green">
+              <button onClick={handleClick} className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all text-neon-green mechanical-btn">
                 [ READ_MORE ] <ExternalLink size={14} />
               </button>
             </motion.div>
@@ -500,166 +508,78 @@ export default function Portfolio() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-16">
-          <div>
-            <h2 className="text-4xl font-bold mb-6 glitch">ESTABLISH_SIGNAL</h2>
-            <p className="text-neon-green/50 mb-12 text-sm font-mono leading-relaxed">
-              {">"} ENCRYPTED CHANNEL OPEN...<br />
-              {">"} AWAITING INPUT...<br />
-              {">"} SECURE CONNECTION READY.
-            </p>
+      <section id="contact" className="py-16 md:py-32 px-6 bg-neon-green/5">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-8 glitch">ESTABLISH_CONNECTION</h2>
+          <p className="text-neon-green/50 text-xs mb-12 font-mono uppercase tracking-widest">
+            // Ready to collaborate on security projects or discuss opportunities
+          </p>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-4 p-4 glass-card border-neon-green/10">
-                <Mail className="text-neon-green" size={20} />
-                <div>
-                  <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Secure_Mail</div>
-                  <div className="font-bold text-xs uppercase">sariftachamo.job@gmail.com</div>
-                </div>
+          <div className="glass-card p-8 md:p-12 border-neon-green/20">
+            <form className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <input
+                  type="text"
+                  placeholder="NAME"
+                  className="terminal-input"
+                />
+                <input
+                  type="email"
+                  placeholder="EMAIL"
+                  className="terminal-input"
+                />
               </div>
-              <motion.div 
-                whileHover={{ scale: 1.02, x: 5 }}
-                className="flex items-center gap-4 p-4 glass-card border-neon-green/20 hover:border-neon-green hover:neon-glow transition-all cursor-pointer"
+              <input
+                type="text"
+                placeholder="SUBJECT"
+                className="terminal-input w-full"
+              />
+              <textarea
+                placeholder="MESSAGE"
+                rows={5}
+                className="terminal-input w-full resize-none"
+              />
+              <button
+                type="submit"
+                onClick={handleClickStrong}
+                className="w-full py-3 bg-neon-green text-black font-bold uppercase tracking-widest hover:bg-neon-green/90 transition-all flex items-center justify-center gap-2 btn-mechanical"
               >
-                <Linkedin className="text-neon-green" size={20} />
-                <div>
-                  <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Net_ID</div>
-                  <a href="https://www.linkedin.com/in/sarif-tachamo-06b9b9248/" target="_blank" rel="noopener noreferrer" className="font-bold text-xs uppercase hover:text-neon-green">linkedin.com/in/sarif-tachamo</a>
-                </div>
-              </motion.div>
-              <motion.div 
-                whileHover={{ scale: 1.02, x: 5 }}
-                className="flex items-center gap-4 p-4 glass-card border-neon-green/20 hover:border-neon-green hover:neon-glow transition-all cursor-pointer"
-              >
-                <Github className="text-neon-green" size={20} />
-                <div>
-                  <div className="text-[8px] text-neon-green/40 uppercase tracking-widest">Program_Log</div>
-                  <a href="https://github.com/sariftachamo-9" target="_blank" rel="noopener noreferrer" className="font-bold text-xs uppercase hover:text-neon-green">github.com/sariftachamo-9</a>
-                </div>
-              </motion.div>
-
-            </div>
+                <Send size={16} /> TRANSMIT_SIGNAL
+              </button>
+            </form>
           </div>
 
-          <motion.form
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="glass-card p-8 space-y-6 border-neon-green/30"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const data = Object.fromEntries(formData.entries());
-
-              try {
-                const res = await fetch('/api/contact', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'X-Security-Signal': 'active'
-                  },
-                  body: JSON.stringify({
-                    name: data.Sender_ID,
-                    email: data.Return_Addr,
-                    subject: data.Frequency,
-                    message: data.Payload
-                  })
-                });
-
-                if (res.ok) {
-                  alert('SIGNAL TRANSMITTED: SECURE_CHANNEL_ESTABLISHED.');
-                  (e.target as HTMLFormElement).reset();
-                } else {
-                  alert('TRANSMISSION_FAILED: INTERFERENCE_DETECTED.');
-                }
-              } catch (err) {
-                alert('CRITICAL_ERROR: UPLINK_LOST.');
-              }
-            }}
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase tracking-widest text-neon-green/40">Sender_ID</label>
-                <input type="text" className="terminal-input w-full text-xs" required />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase tracking-widest text-neon-green/40">Return_Addr</label>
-                <input type="email" className="terminal-input w-full text-xs" required />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] uppercase tracking-widest text-neon-green/40">Frequency</label>
-              <input type="text" className="terminal-input w-full text-xs" required />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] uppercase tracking-widest text-neon-green/40">Payload</label>
-              <textarea rows={4} className="terminal-input w-full text-xs resize-none" required></textarea>
-            </div>
+          <div className="flex justify-center gap-6 mt-12">
             <Magnetic>
-              <button className="w-full py-4 bg-neon-green text-black font-bold uppercase tracking-widest text-xs neon-glow hover:scale-[1.02] transition-all">
-                [ TRANSMIT_SIGNAL ]
-              </button>
+              <a href="https://github.com" onClick={handleClick} className="p-4 border border-neon-green/30 text-neon-green/50 hover:border-neon-green hover:text-neon-green transition-all icon-btn-mechanical">
+                <Github size={20} />
+              </a>
             </Magnetic>
-          </motion.form>
+            <Magnetic>
+              <a href="https://linkedin.com" onClick={handleClick} className="p-4 border border-neon-green/30 text-neon-green/50 hover:border-neon-green hover:text-neon-green transition-all icon-btn-mechanical">
+                <Linkedin size={20} />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a href="mailto:sarif@example.com" onClick={handleClick} className="p-4 border border-neon-green/30 text-neon-green/50 hover:border-neon-green hover:text-neon-green transition-all icon-btn-mechanical">
+                <Mail size={20} />
+              </a>
+            </Magnetic>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-16 border-t border-neon-green/20 bg-black/60 backdrop-blur-sm relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid opacity-5 pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center">
-          <div className="flex justify-center gap-6 md:gap-10 mb-8">
-            <Magnetic>
-              <a href="https://github.com/sariftachamo-9" target="_blank" rel="noopener noreferrer" className="text-neon-green/40 hover:text-neon-green hover:drop-shadow-[0_0_8px_#00FF41] transition-all transform hover:scale-125">
-                <Github size={24} />
-              </a>
-            </Magnetic>
-            <Magnetic>
-              <a href="https://www.linkedin.com/in/sarif-tachamo-06b9b9248/" target="_blank" rel="noopener noreferrer" className="text-neon-green/40 hover:text-neon-green hover:drop-shadow-[0_0_8px_#00FF41] transition-all transform hover:scale-125">
-                <Linkedin size={24} />
-              </a>
-            </Magnetic>
-            <Magnetic>
-              <a href="mailto:sariftachamo.job@gmail.com" className="text-neon-green/40 hover:text-neon-green hover:drop-shadow-[0_0_8px_#00FF41] transition-all transform hover:scale-125">
-                <Mail size={24} />
-              </a>
-            </Magnetic>
+      <footer className="py-8 px-6 border-t border-neon-green/10">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="text-neon-green/30 text-[10px] font-mono uppercase tracking-widest">
+            // SECURE_TRANSMISSION_COMPLETE
           </div>
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="h-0.5 w-12 bg-neon-green/20 mb-4" />
-            <p className="text-neon-green font-mono text-[10px] tracking-[0.4em] uppercase opacity-60">
-              SYSTEM_VERSION: 3.0.1 // encrypted_connection_active
-            </p>
-            <p className="text-neon-green/30 font-mono text-[8px] uppercase tracking-widest mt-2">
-              © 2026 SARIF TACHAMO // NO_RIGHTS_OBSCURED
-            </p>
-          </motion.div>
+          <div className="text-neon-green/30 text-[10px] font-mono">
+            © {new Date().getFullYear()} SARIF TACHAMO. ALL_RIGHTS_RESERVED.
+          </div>
         </div>
       </footer>
-
-      {/* Login Portal Sign */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <Magnetic>
-          <motion.a
-            href="/login"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ scale: 1.1 }}
-            className="glass-card p-3 border-neon-green/40 flex items-center gap-3 group hover:border-neon-green transition-all"
-          >
-            <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-neon-green/60 group-hover:text-neon-green">
-              [ ACCESS_PORTAL ]
-            </span>
-            <Lock size={12} className="text-neon-green/40 group-hover:text-neon-green" />
-          </motion.a>
-        </Magnetic>
-      </div>
     </div>
   );
 }

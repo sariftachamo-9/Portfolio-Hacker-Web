@@ -1,7 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Shield } from 'lucide-react';
 import MatrixBackground from './MatrixBackground';
+
+// Web Audio API for keyboard click sounds
+const createKeyboardClick = (audioContext: AudioContext | null) => {
+    if (!audioContext) return;
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    // Mechanical click characteristics
+    oscillator.type = 'square';
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.05);
+    
+    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.08);
+};
+
+const createKeySound = (audioContext: AudioContext | null) => {
+    if (!audioContext) return;
+    
+    // Secondary click for variation (lower pitch)
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.type = 'triangle';
+    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.03);
+    
+    gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.05);
+};
 
 export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
     const [phase, setPhase] = useState(0);
@@ -10,6 +53,29 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
     const [textSignal, setTextSignal] = useState("");
     const [terminalLines, setTerminalLines] = useState<{ text: string, status: 'busy' | 'ok' }[]>([]);
     const [progress, setProgress] = useState(0);
+    const audioContextRef = useRef<AudioContext | null>(null);
+    const soundEnabledRef = useRef(true);
+
+    // Initialize audio context on first user interaction
+    useEffect(() => {
+        const initAudio = () => {
+            if (!audioContextRef.current) {
+                audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+            }
+            if (audioContextRef.current.state === 'suspended') {
+                audioContextRef.current.resume();
+            }
+        };
+
+        // Auto-init on first phase
+        initAudio();
+
+        return () => {
+            if (audioContextRef.current) {
+                audioContextRef.current.close();
+            }
+        };
+    }, []);
 
     const line1 = "I CAN SEE YOU";
     const line2 = "i will find you anywhere and anyhow,\nno matter what you do";
@@ -19,6 +85,10 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
         // Phase 0: Shock Intro
         if (phase === 0) {
             const timer = setTimeout(() => setPhase(1), 1800);
+            // Play keyboard click when SURPRISE appears
+            if (soundEnabledRef.current) {
+                createKeyboardClick(audioContextRef.current);
+            }
             return () => clearTimeout(timer);
         }
 
@@ -27,6 +97,10 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
             let i = 0;
             const typeLine1 = setInterval(() => {
                 setText1(line1.slice(0, i + 1));
+                // Play keyboard click for each character
+                if (soundEnabledRef.current) {
+                    createKeyboardClick(audioContextRef.current);
+                }
                 i++;
                 if (i >= line1.length) {
                     clearInterval(typeLine1);
@@ -34,6 +108,10 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                         let j = 0;
                         const typeLine2 = setInterval(() => {
                             setText2(line2.slice(0, j + 1));
+                            // Play keyboard click for each character
+                            if (soundEnabledRef.current) {
+                                createKeySound(audioContextRef.current);
+                            }
                             j++;
                             if (j >= line2.length) {
                                 clearInterval(typeLine2);
@@ -42,6 +120,10 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                                     let k = 0;
                                     const typeSignal = setInterval(() => {
                                         setTextSignal(signalLine.slice(0, k + 1));
+                                        // Play keyboard click for each character
+                                        if (soundEnabledRef.current) {
+                                            createKeyboardClick(audioContextRef.current);
+                                        }
                                         k++;
                                         if (k >= signalLine.length) {
                                             clearInterval(typeSignal);
@@ -70,6 +152,10 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
             lines.forEach((line, index) => {
                 setTimeout(() => {
                     setTerminalLines(prev => [...prev, { text: line, status: 'busy' }]);
+                    // Play keyboard click when terminal line appears
+                    if (soundEnabledRef.current) {
+                        createKeyboardClick(audioContextRef.current);
+                    }
                     setTimeout(() => {
                         setTerminalLines(prev =>
                             prev.map(l => l.text === line ? { ...l, status: 'ok' } : l)
@@ -93,6 +179,10 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
 
         // Phase 3: Final Welcome
         if (phase === 3) {
+            // Play keyboard click when welcome message appears
+            if (soundEnabledRef.current) {
+                createKeyboardClick(audioContextRef.current);
+            }
             setTimeout(onFinish, 1200);
         }
     }, [phase, onFinish]);
