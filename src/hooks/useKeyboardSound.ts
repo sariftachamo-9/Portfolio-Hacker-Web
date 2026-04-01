@@ -68,14 +68,10 @@ export function useKeyboardSound() {
     oscillator.stop(audioContextRef.current.currentTime + 0.05);
   }, []);
 
-  // Play random click sound (alternates between primary and secondary)
+  // Play primary mechanical keyboard click sound only
   const playKeySound = useCallback(() => {
-    if (Math.random() > 0.5) {
-      createKeyboardClick();
-    } else {
-      createKeySound();
-    }
-  }, [createKeyboardClick, createKeySound]);
+    createKeyboardClick();
+  }, [createKeyboardClick]);
 
   // Toggle sound on/off
   const toggleSound = useCallback(() => {

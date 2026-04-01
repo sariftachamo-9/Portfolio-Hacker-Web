@@ -110,7 +110,7 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                             setText2(line2.slice(0, j + 1));
                             // Play keyboard click for each character
                             if (soundEnabledRef.current) {
-                                createKeySound(audioContextRef.current);
+                                createKeyboardClick(audioContextRef.current);
                             }
                             j++;
                             if (j >= line2.length) {
@@ -172,7 +172,7 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                     }
 
                     if (soundEnabledRef.current) {
-                        createKeySound(audioContextRef.current);
+                        createKeyboardClick(audioContextRef.current);
                     }
 
                     return prev + 4;
