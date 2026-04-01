@@ -1,77 +1,222 @@
 import { useRef, useEffect, useCallback } from 'react';
 
-export function useKeyboardSound() {
+interface KeyboardSoundOptions {
+  volume?: number;
+  clickDecay?: number;
+  pitchVariation?: boolean;
+}
+
+export function useKeyboardSound(options: KeyboardSoundOptions = {}) {
+  const {
+    volume = 0.15,
+    clickDecay = 0.08,
+    pitchVariation = true
+  } = options;
+
   const audioContextRef = useRef<AudioContext | null>(null);
   const soundEnabledRef = useRef(true);
+  const lastKeyTimeRef = useRef(0);
 
-  // Initialize audio context on first user interaction
+  const initAudio = useCallback(() => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+
+    if (audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume().catch(() => {
+        // Ignore resume failures until a user gesture occurs
+      });
+    }
+  }, []);
+
   useEffect(() => {
-    const initAudio = () => {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      }
-      if (audioContextRef.current.state === 'suspended') {
-        audioContextRef.current.resume();
-      }
+    const startAudio = () => {
+      initAudio();
+      window.removeEventListener('pointerdown', startAudio);
+      window.removeEventListener('keydown', startAudio);
     };
 
-    // Auto-init on mount
-    initAudio();
+    window.addEventListener('pointerdown', startAudio, { once: true });
+    window.addEventListener('keydown', startAudio, { once: true });
 
     return () => {
+      window.removeEventListener('pointerdown', startAudio);
+      window.removeEventListener('keydown', startAudio);
       if (audioContextRef.current) {
         audioContextRef.current.close();
       }
     };
-  }, []);
+  }, [initAudio]);
 
-  // Mechanical click sound (primary)
-  const createKeyboardClick = useCallback(() => {
+  // Main mechanical click sound with improved realism
+  const createMechanicalClick = useCallback((pitch: number = 800) => {
     if (!audioContextRef.current || !soundEnabledRef.current) return;
     
-    const oscillator = audioContextRef.current.createOscillator();
-    const gainNode = audioContextRef.current.createGain();
+    const now = audioContextRef.current.currentTime;
+    const ctx = audioContextRef.current;
     
-    // Mechanical click characteristics
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(800, audioContextRef.current.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(200, audioContextRef.current.currentTime + 0.05);
+    // Create main click oscillator
+    const mainOsc = ctx.createOscillator();
+    const mainGain = ctx.createGain();
     
-    gainNode.gain.setValueAtTime(0.15, audioContextRef.current.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.08);
+    // Add a second oscillator for harmonic richness
+    const harmonicOsc = ctx.createOscillator();
+    const harmonicGain = ctx.createGain();
     
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContextRef.current.destination);
+    // Create filter for more natural sound
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(2000, now);
+    filter.frequency.exponentialRampToValueAtTime(500, now + 0.05);
     
-    oscillator.start(audioContextRef.current.currentTime);
-    oscillator.stop(audioContextRef.current.currentTime + 0.08);
-  }, []);
+    // Main click characteristics
+    const startPitch = pitchVariation ? pitch + (Math.random() - 0.5) * 100 : pitch;
+    mainOsc.type = 'square';
+    mainOsc.frequency.setValueAtTime(startPitch, now);
+    mainOsc.frequency.exponentialRampToValueAtTime(startPitch * 0.25, now + clickDecay);
+    
+    // Harmonic oscillator for depth
+    harmonicOsc.type = 'sine';
+    harmonicOsc.frequency.setValueAtTime(startPitch * 1.5, now);
+    harmonicOsc.frequency.exponentialRampToValueAtTime(startPitch * 0.3, now + clickDecay * 0.7);
+    
+    // Volume envelopes
+    mainGain.gain.setValueAtTime(volume, now);
+    mainGain.gain.exponentialRampToValueAtTime(0.001, now + clickDecay);
+    
+    harmonicGain.gain.setValueAtTime(volume * 0.4, now);
+    harmonicGain.gain.exponentialRampToValueAtTime(0.001, now + clickDecay * 0.6);
+    
+    // Connect everything
+    mainOsc.connect(mainGain);
+    harmonicOsc.connect(harmonicGain);
+    mainGain.connect(filter);
+    harmonicGain.connect(filter);
+    filter.connect(ctx.destination);
+    
+    // Play sounds
+    mainOsc.start(now);
+    mainOsc.stop(now + clickDecay);
+    harmonicOsc.start(now);
+    harmonicOsc.stop(now + clickDecay);
+  }, [volume, clickDecay, pitchVariation]);
 
-  // Secondary click sound (variation)
-  const createKeySound = useCallback(() => {
+  // Add spring/mechanical release sound for key-up effect
+  const createKeyRelease = useCallback(() => {
     if (!audioContextRef.current || !soundEnabledRef.current) return;
     
-    const oscillator = audioContextRef.current.createOscillator();
-    const gainNode = audioContextRef.current.createGain();
+    const now = audioContextRef.current.currentTime;
+    const ctx = audioContextRef.current;
     
-    oscillator.type = 'triangle';
-    oscillator.frequency.setValueAtTime(400, audioContextRef.current.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(100, audioContextRef.current.currentTime + 0.03);
+    // Spring-like release sound
+    const releaseOsc = ctx.createOscillator();
+    const releaseGain = ctx.createGain();
     
-    gainNode.gain.setValueAtTime(0.08, audioContextRef.current.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.05);
+    releaseOsc.type = 'sine';
+    releaseOsc.frequency.setValueAtTime(120, now);
+    releaseOsc.frequency.exponentialRampToValueAtTime(40, now + 0.03);
     
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContextRef.current.destination);
+    releaseGain.gain.setValueAtTime(volume * 0.08, now);
+    releaseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
     
-    oscillator.start(audioContextRef.current.currentTime);
-    oscillator.stop(audioContextRef.current.currentTime + 0.05);
-  }, []);
+    releaseOsc.connect(releaseGain);
+    releaseGain.connect(ctx.destination);
+    
+    releaseOsc.start(now);
+    releaseOsc.stop(now + 0.04);
+  }, [volume]);
 
-  // Play primary mechanical keyboard click sound only
+  // Enhanced keyboard click with key-up sound for more realism
   const playKeySound = useCallback(() => {
-    createKeyboardClick();
-  }, [createKeyboardClick]);
+    const now = Date.now();
+    const timeSinceLastKey = now - lastKeyTimeRef.current;
+    
+    // Add subtle pitch variation based on typing speed
+    const pitchBase = 750;
+    let pitch = pitchBase;
+    
+    if (pitchVariation) {
+      // Faster typing = slightly higher pitch for more dynamic feel
+      const speedFactor = Math.min(1, Math.max(0.5, 1 - timeSinceLastKey / 200));
+      pitch = pitchBase + (Math.random() - 0.5) * 100 + (speedFactor * 50);
+    }
+    
+    createMechanicalClick(pitch);
+    
+    // Add subtle release sound for non-rapid typing
+    if (timeSinceLastKey > 100) {
+      setTimeout(() => createKeyRelease(), 5);
+    }
+    
+    lastKeyTimeRef.current = now;
+  }, [createMechanicalClick, createKeyRelease, pitchVariation]);
+
+  // Alternative: Spacebar/Enter heavy key sound
+  const playHeavyKeySound = useCallback(() => {
+    if (!audioContextRef.current || !soundEnabledRef.current) return;
+    
+    const now = audioContextRef.current.currentTime;
+    const ctx = audioContextRef.current;
+    
+    // Deeper, more pronounced sound for larger keys
+    const heavyOsc = ctx.createOscillator();
+    const heavyGain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    
+    heavyOsc.type = 'triangle';
+    heavyOsc.frequency.setValueAtTime(400, now);
+    heavyOsc.frequency.exponentialRampToValueAtTime(120, now + 0.1);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1500, now);
+    filter.frequency.exponentialRampToValueAtTime(400, now + 0.08);
+    
+    heavyGain.gain.setValueAtTime(volume * 1.2, now);
+    heavyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    
+    heavyOsc.connect(heavyGain);
+    heavyGain.connect(filter);
+    filter.connect(ctx.destination);
+    
+    heavyOsc.start(now);
+    heavyOsc.stop(now + 0.12);
+  }, [volume]);
+
+  // Alternative: Sharp click for modifier keys (Shift, Ctrl, etc.)
+  const playSharpKeySound = useCallback(() => {
+    if (!audioContextRef.current || !soundEnabledRef.current) return;
+    
+    const now = audioContextRef.current.currentTime;
+    const ctx = audioContextRef.current;
+    
+    const sharpOsc = ctx.createOscillator();
+    const sharpGain = ctx.createGain();
+    
+    sharpOsc.type = 'square';
+    sharpOsc.frequency.setValueAtTime(1200, now);
+    sharpOsc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
+    
+    sharpGain.gain.setValueAtTime(volume * 0.6, now);
+    sharpGain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+    
+    sharpOsc.connect(sharpGain);
+    sharpGain.connect(ctx.destination);
+    
+    sharpOsc.start(now);
+    sharpOsc.stop(now + 0.06);
+  }, [volume]);
+
+  // Create a typing pattern sound (e.g., for word completion)
+  const createWordTypingSound = useCallback((word: string, speed: number = 80) => {
+    if (!soundEnabledRef.current) return;
+    
+    const chars = word.split('');
+    chars.forEach((_, index) => {
+      setTimeout(() => {
+        playKeySound();
+      }, index * speed);
+    });
+  }, [playKeySound]);
 
   // Toggle sound on/off
   const toggleSound = useCallback(() => {
@@ -84,12 +229,22 @@ export function useKeyboardSound() {
     soundEnabledRef.current = enabled;
   }, []);
 
+  // Set volume dynamically
+  const setVolume = useCallback((newVolume: number) => {
+    if (audioContextRef.current) {
+      // Volume will be applied in subsequent sounds
+      // This is a placeholder for dynamic volume control
+    }
+  }, []);
+
   return {
-    playKeySound,
-    createKeyboardClick,
-    createKeySound,
+    playKeySound,          // Regular key click
+    playHeavyKeySound,     // Heavy key (Space/Enter)
+    playSharpKeySound,     // Sharp click (Modifier keys)
+    createWordTypingSound, // Play sound for entire word
     toggleSound,
     setSoundEnabled,
+    setVolume,
     isEnabled: () => soundEnabledRef.current
   };
 }
