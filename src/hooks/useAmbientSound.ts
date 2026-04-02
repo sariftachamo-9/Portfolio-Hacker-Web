@@ -34,7 +34,7 @@ export function useAmbientSound() {
         osc.frequency.setValueAtTime(880, now); // A5
         osc.frequency.exponentialRampToValueAtTime(440, now + 0.1); 
 
-        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.setValueAtTime(0.25, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
 
         osc.connect(gain);
@@ -67,11 +67,11 @@ export function useAmbientSound() {
         filter.frequency.setValueAtTime(1000, now);
         filter.Q.value = 10;
 
-        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.setValueAtTime(0.32, now);
         // Stutter effect simulating data transmission
         for (let i = 0; i < 5; i++) {
             const t = now + i * 0.1;
-            gain.gain.setValueAtTime(0.08, t);
+            gain.gain.setValueAtTime(0.32, t);
             gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
         }
 

@@ -20,7 +20,7 @@ const createHackerSound = (audioContext: AudioContext | null) => {
     oscillator.frequency.setValueAtTime(900 + Math.random() * 300, now);
     oscillator.frequency.exponentialRampToValueAtTime(220, now + 0.08);
 
-    gainNode.gain.setValueAtTime(0.16, now);
+    gainNode.gain.setValueAtTime(0.65, now);
     gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
 
     oscillator.connect(filter);
@@ -47,7 +47,7 @@ const createAmbientPulse = (audioContext: AudioContext | null, frequency: number
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(frequency, now);
 
-    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.setValueAtTime(0.5, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
 
     osc.connect(filter);

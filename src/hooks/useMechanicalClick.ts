@@ -37,7 +37,7 @@ export function useMechanicalClick() {
     filter.frequency.setValueAtTime(1000, audioContext.currentTime);
     filter.Q.setValueAtTime(10, audioContext.currentTime);
 
-    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+    gainNode.gain.setValueAtTime(0.7, audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
 
     oscillator.connect(filter);
@@ -60,7 +60,7 @@ export function useMechanicalClick() {
     oscillator.frequency.setValueAtTime(2000, audioContext.currentTime);
     oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.03);
 
-    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+    gainNode.gain.setValueAtTime(0.6, audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
 
     oscillator.connect(gainNode);

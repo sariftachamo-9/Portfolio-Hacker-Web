@@ -46,18 +46,12 @@ export default function MatrixBackground() {
 
     // Layer 1: Classic matrix characters
     const ASCII = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?/';
-    // Layer 2: Hex strings
-    const HEX_POOL = ['0xDEADBEEF', '0xCAFEBABE', '0xBADC0DE', '0xDEADC0DE', '0xFEEDFACE', '0x8BADF00D', '0xBAADF00D'];
 
     const fontSize = 14;
-    const smallFont = 10;
     const cols1 = Math.ceil(canvas.width / fontSize);
 
     // Matrix drop positions
     const drops: number[] = Array.from({ length: cols1 }, () => Math.random() * -50);
-    // Hex drift columns (sparser)
-    const hexCols = Math.ceil(canvas.width / 80);
-    const hexDrops: number[] = Array.from({ length: hexCols }, () => Math.random() * canvas.height);
 
     let frame = 0;
 
@@ -81,19 +75,6 @@ export default function MatrixBackground() {
 
         if (yPos > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
-      }
-
-      // Layer 2: Cyan/blue floating hex strings (upward drift every 2 frames)
-      if (frame % 2 === 0) {
-        ctx.font = `${smallFont}px monospace`;
-        for (let i = 0; i < hexCols; i++) {
-          const hex = HEX_POOL[Math.floor(Math.random() * HEX_POOL.length)];
-          const x = i * 80 + Math.sin(frame * 0.01 + i) * 8;
-          ctx.fillStyle = `rgba(0, 200, 255, ${0.06 + Math.random() * 0.08})`;
-          ctx.fillText(hex, x, hexDrops[i]);
-          hexDrops[i] -= 0.4;
-          if (hexDrops[i] < -20) hexDrops[i] = canvas.height + 20;
-        }
       }
     };
 

@@ -8,7 +8,7 @@ interface KeyboardSoundOptions {
 
 export function useKeyboardSound(options: KeyboardSoundOptions = {}) {
   const {
-    volume = 0.15,
+    volume = 0.6,
     clickDecay = 0.08,
     pitchVariation = true
   } = options;
@@ -80,7 +80,7 @@ export function useKeyboardSound(options: KeyboardSoundOptions = {}) {
     harmonicOsc.frequency.setValueAtTime(startPitch * 1.5, now);
     harmonicOsc.frequency.exponentialRampToValueAtTime(startPitch * 0.3, now + clickDecay * 0.7);
     
-    // Volume envelopes
+    // Volume envelopes (now with higher volume)
     mainGain.gain.setValueAtTime(volume, now);
     mainGain.gain.exponentialRampToValueAtTime(0.001, now + clickDecay);
     
