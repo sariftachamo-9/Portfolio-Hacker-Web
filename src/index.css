@@ -95,6 +95,35 @@
   }
 }
 
+/* Glitch Scanline Animation */
+@keyframes glitch-scan {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+/* Glitch Bars Animation */
+@keyframes glitch-bar-h {
+  0%, 100% {
+    width: 0;
+  }
+  50% {
+    width: 40px;
+  }
+}
+
+@keyframes glitch-bar-v {
+  0%, 100% {
+    height: 0;
+  }
+  50% {
+    height: 30px;
+  }
+}
+
 .glitch:hover {
   animation: glitch 0.2s infinite;
   text-shadow: 2px 0 #ff003c, -2px 0 #00fff0;
@@ -283,13 +312,14 @@
   pointer-events: none;
 }
 
-/* Mechanical Button Click Effect */
+/* Hacker Mechanical Button Click Effect */
 .mechanical-btn {
   position: relative;
   transition: all 0.1s ease;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
 }
 
 .mechanical-btn::before {
@@ -305,13 +335,35 @@
   pointer-events: none;
 }
 
+.mechanical-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(0, 255, 65, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+  pointer-events: none;
+}
+
 .mechanical-btn:active {
   transform: scale(0.95) translateY(2px);
-  box-shadow: 0 0 0 2px rgba(0, 255, 65, 0.8), inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 2px rgba(0, 255, 65, 0.8), 
+              inset 0 2px 4px rgba(0, 0, 0, 0.5),
+              0 0 20px rgba(0, 255, 65, 0.6),
+              0 0 40px rgba(0, 255, 65, 0.3);
+  animation: glitch-click 0.2s ease;
 }
 
 .mechanical-btn:active::before {
   opacity: 1;
+}
+
+.mechanical-btn:active::after {
+  width: 200%;
+  height: 200%;
 }
 
 .mechanical-btn-strong {
@@ -320,6 +372,7 @@
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
 }
 
 .mechanical-btn-strong::before {
@@ -335,13 +388,85 @@
   pointer-events: none;
 }
 
+.mechanical-btn-strong::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(0, 255, 65, 0.5) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+  pointer-events: none;
+}
+
 .mechanical-btn-strong:active {
   transform: scale(0.92) translateY(3px);
-  box-shadow: 0 0 0 3px rgba(0, 255, 65, 1), inset 0 3px 6px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 0 3px rgba(0, 255, 65, 1), 
+              inset 0 3px 6px rgba(0, 0, 0, 0.7),
+              0 0 30px rgba(0, 255, 65, 0.8),
+              0 0 60px rgba(0, 255, 65, 0.4);
+  animation: glitch-click-strong 0.25s ease;
 }
 
 .mechanical-btn-strong:active::before {
   opacity: 1;
+}
+
+.mechanical-btn-strong:active::after {
+  width: 250%;
+  height: 250%;
+}
+
+@keyframes glitch-click {
+  0% {
+    transform: scale(0.95) translateY(2px);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: scale(0.95) translateY(2px) translateX(-2px);
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    transform: scale(0.95) translateY(2px) translateX(2px);
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    transform: scale(0.95) translateY(2px) translateX(-1px);
+    filter: hue-rotate(270deg);
+  }
+  100% {
+    transform: scale(0.95) translateY(2px);
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes glitch-click-strong {
+  0% {
+    transform: scale(0.92) translateY(3px);
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  20% {
+    transform: scale(0.92) translateY(3px) translateX(-3px);
+    filter: hue-rotate(72deg) brightness(1.2);
+  }
+  40% {
+    transform: scale(0.92) translateY(3px) translateX(3px);
+    filter: hue-rotate(144deg) brightness(1.1);
+  }
+  60% {
+    transform: scale(0.92) translateY(3px) translateX(-2px);
+    filter: hue-rotate(216deg) brightness(1.3);
+  }
+  80% {
+    transform: scale(0.92) translateY(3px) translateX(2px);
+    filter: hue-rotate(288deg) brightness(1.1);
+  }
+  100% {
+    transform: scale(0.92) translateY(3px);
+    filter: hue-rotate(360deg) brightness(1);
+  }
 }
 
 /* Enhanced button styles with mechanical effect */
@@ -390,12 +515,18 @@
 .btn-mechanical:hover {
   background: var(--color-neon-green);
   color: black;
-  box-shadow: 0 0 20px var(--color-neon-green);
+  box-shadow: 0 0 20px var(--color-neon-green),
+              0 0 40px rgba(0, 255, 65, 0.3);
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .btn-mechanical:active {
   transform: scale(0.95) translateY(2px);
-  box-shadow: 0 0 0 3px rgba(0, 255, 65, 0.8), inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 255, 65, 0.8), 
+              inset 0 2px 4px rgba(0, 0, 0, 0.5),
+              0 0 30px rgba(0, 255, 65, 0.8),
+              0 0 60px rgba(0, 255, 65, 0.4);
+  animation: glitch-click 0.2s ease;
 }
 
 .btn-mechanical:active::before {
@@ -404,6 +535,8 @@
 
 .btn-mechanical:active::after {
   transform: translateY(0);
+  box-shadow: 0 0 20px var(--color-neon-green),
+              0 0 40px var(--color-neon-green);
 }
 
 /* Icon button with mechanical effect */
@@ -421,6 +554,7 @@
   transition: all 0.1s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
 }
 
 .icon-btn-mechanical::before {
@@ -435,17 +569,40 @@
   transition: opacity 0.1s ease;
 }
 
+.icon-btn-mechanical::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(0, 255, 65, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+  pointer-events: none;
+}
+
 .icon-btn-mechanical:hover {
   background: var(--color-neon-green);
   color: black;
-  box-shadow: 0 0 15px var(--color-neon-green);
+  box-shadow: 0 0 15px var(--color-neon-green),
+              0 0 30px rgba(0, 255, 65, 0.3);
 }
 
 .icon-btn-mechanical:active {
   transform: scale(0.9) translateY(2px);
-  box-shadow: 0 0 0 2px rgba(0, 255, 65, 0.8), inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 2px rgba(0, 255, 65, 0.8), 
+              inset 0 2px 4px rgba(0, 0, 0, 0.6),
+              0 0 20px rgba(0, 255, 65, 0.8),
+              0 0 40px rgba(0, 255, 65, 0.4);
+  animation: glitch-click 0.2s ease;
 }
 
 .icon-btn-mechanical:active::before {
   opacity: 1;
+}
+
+.icon-btn-mechanical:active::after {
+  width: 200%;
+  height: 200%;
 }

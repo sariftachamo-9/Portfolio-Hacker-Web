@@ -151,6 +151,35 @@ export function useKeyboardSound(options: KeyboardSoundOptions = {}) {
     lastKeyTimeRef.current = now;
   }, [createMechanicalClick, createKeyRelease, pitchVariation]);
 
+  // Hacker pulse sound for non-button effects
+  const playHackerSound = useCallback(() => {
+    if (!audioContextRef.current || !soundEnabledRef.current) return;
+
+    const now = audioContextRef.current.currentTime;
+    const ctx = audioContextRef.current;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1200 + Math.random() * 400, now);
+    filter.Q.setValueAtTime(12, now);
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(900 + Math.random() * 300, now);
+    osc.frequency.exponentialRampToValueAtTime(220, now + 0.1);
+
+    gain.gain.setValueAtTime(volume * 0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.12);
+  }, [volume]);
+
   // Alternative: Spacebar/Enter heavy key sound
   const playHeavyKeySound = useCallback(() => {
     if (!audioContextRef.current || !soundEnabledRef.current) return;
@@ -238,7 +267,8 @@ export function useKeyboardSound(options: KeyboardSoundOptions = {}) {
   }, []);
 
   return {
-    playKeySound,          // Regular key click
+    playKeySound,          // Regular key click for buttons
+    playHackerSound,       // Hacker-style sound for non-button effects
     playHeavyKeySound,     // Heavy key (Space/Enter)
     playSharpKeySound,     // Sharp click (Modifier keys)
     createWordTypingSound, // Play sound for entire word

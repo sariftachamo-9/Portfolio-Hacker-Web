@@ -1,12 +1,13 @@
-# Mechanical Button Click Effect
+# Hacker Mechanical Button Click Effect
 
-This project includes a mechanical button click effect that provides both visual and audio feedback when buttons are clicked.
+This project includes a hacker-themed mechanical button click effect that provides both visual and audio feedback when buttons are clicked.
 
 ## Features
 
-- **Visual Feedback**: Buttons scale down and show inset shadows when clicked, simulating a physical button press
-- **Audio Feedback**: Mechanical click sounds play when buttons are clicked
-- **Multiple Intensity Levels**: Two levels of click effects (normal and strong)
+- **Visual Feedback**: Buttons scale down with glitch animations, neon glows, and cyberpunk effects
+- **Audio Feedback**: Multiple sound types including mechanical clicks, glitch sounds, and electric zaps
+- **Multiple Intensity Levels**: Four levels of click effects (normal, strong, glitch, and zap)
+- **Hacker Aesthetics**: Glitch animations, hue shifts, and neon green color scheme
 - **Easy Integration**: Simple CSS classes and React hooks for quick implementation
 
 ## Usage
@@ -59,7 +60,7 @@ The `useMechanicalClick` hook provides programmatic control over the click effec
 import { useMechanicalClick } from '../hooks/useMechanicalClick';
 
 function MyComponent() {
-  const { handleClick, handleClickStrong } = useMechanicalClick();
+  const { handleClick, handleClickStrong, handleClickGlitch, handleClickZap } = useMechanicalClick();
 
   return (
     <button onClick={handleClick}>
@@ -68,6 +69,14 @@ function MyComponent() {
     
     <button onClick={handleClickStrong}>
       Strong Click
+    </button>
+    
+    <button onClick={handleClickGlitch}>
+      Glitch Click
+    </button>
+    
+    <button onClick={handleClickZap}>
+      Zap Click
     </button>
   );
 }
@@ -79,15 +88,17 @@ function MyComponent() {
 
 - **Scale**: Buttons scale down to 95% (normal) or 92% (strong) on click
 - **Shadow**: Inset shadows create a "pressed in" effect
-- **Glow**: Neon green border glow on click
-- **Gradient**: Subtle gradient overlay appears during press
+- **Glow**: Neon green border glow on click with multiple layers
+- **Gradient**: Radial gradient overlay expands on click
+- **Glitch Animation**: Hue rotation and position jitter for cyberpunk effect
+- **Brightness Flash**: Brightness increase for zap effect
 
 ### Audio Effects
 
-- Uses the existing `useKeyboardSound` hook
-- Two sound variations for natural feel
-- Square and triangle wave oscillators for mechanical sound
-- Quick frequency sweep for click effect
+- **Normal Click**: Uses existing `playKeySound()` for mechanical click
+- **Strong Click**: Uses `playHeavyKeySound()` for deeper, more pronounced sound
+- **Glitch Sound**: Custom sawtooth oscillator with bandpass filter for cyberpunk effect
+- **Zap Sound**: Square wave with rapid frequency sweep for electric zap
 
 ## Examples
 

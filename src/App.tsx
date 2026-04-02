@@ -3,9 +3,11 @@ import Portfolio from './pages/Portfolio';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
 import Cryptography from './pages/Cryptography';
+import BlogDetail from './pages/BlogDetail';
 import React, { useState } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import { AnimatePresence } from 'motion/react';
+import { DarkModeProvider } from './contexts/DarkModeContext';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('admin_token');
@@ -17,7 +19,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   return (
-    <>
+    <DarkModeProvider>
       <AnimatePresence mode="wait">
         {loading && (
           <LoadingScreen key="loading" onFinish={() => setLoading(false)} />
@@ -35,6 +37,7 @@ export default function App() {
               <Route path="/" element={<Portfolio />} />
               <Route path="/login" element={<Login />} />
               <Route path="/cryptography" element={<Cryptography />} />
+              <Route path="/blog/:id" element={<BlogDetail />} />
               <Route
                 path="/admin/*"
                 element={
@@ -47,6 +50,6 @@ export default function App() {
           </div>
         </div>
       </Router>
-    </>
+    </DarkModeProvider>
   );
 }

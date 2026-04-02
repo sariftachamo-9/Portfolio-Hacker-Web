@@ -3,47 +3,89 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Shield } from 'lucide-react';
 import MatrixBackground from './MatrixBackground';
 
-// Web Audio API for keyboard click sounds
-const createKeyboardClick = (audioContext: AudioContext | null) => {
+// Web Audio API for hacker-style pulse effects
+const createHackerSound = (audioContext: AudioContext | null) => {
     if (!audioContext) return;
-    
+
+    const now = audioContext.currentTime;
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
-    
-    // Mechanical click characteristics
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.05);
-    
-    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
-    
-    oscillator.connect(gainNode);
+    const filter = audioContext.createBiquadFilter();
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1200 + Math.random() * 400, now);
+    filter.Q.setValueAtTime(14, now);
+
+    oscillator.type = 'sawtooth';
+    oscillator.frequency.setValueAtTime(900 + Math.random() * 300, now);
+    oscillator.frequency.exponentialRampToValueAtTime(220, now + 0.08);
+
+    gainNode.gain.setValueAtTime(0.16, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+    oscillator.connect(filter);
+    filter.connect(gainNode);
     gainNode.connect(audioContext.destination);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.08);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.1);
 };
 
-const createKeySound = (audioContext: AudioContext | null) => {
+// Ambient hacker pulse for breach phase
+const createAmbientPulse = (audioContext: AudioContext | null, frequency: number = 80) => {
     if (!audioContext) return;
-    
-    // Secondary click for variation (lower pitch)
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.type = 'triangle';
-    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.03);
-    
-    gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.05);
+
+    const now = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(frequency + 40, now);
+    filter.Q.setValueAtTime(8, now);
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(frequency, now);
+
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.35);
+};
+
+// Sharp glitch hit for breach completion
+const createGlitchHit = (audioContext: AudioContext | null) => {
+    if (!audioContext) return;
+
+    const now = audioContext.currentTime;
+    const osc1 = audioContext.createOscillator();
+    const osc2 = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    osc1.type = 'square';
+    osc1.frequency.setValueAtTime(400, now);
+    osc1.frequency.exponentialRampToValueAtTime(100, now + 0.08);
+
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(600, now);
+    osc2.frequency.exponentialRampToValueAtTime(80, now + 0.06);
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(audioContext.destination);
+
+    osc1.start(now);
+    osc1.stop(now + 0.08);
+    osc2.start(now);
+    osc2.stop(now + 0.06);
 };
 
 export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
@@ -53,8 +95,32 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
     const [textSignal, setTextSignal] = useState("");
     const [terminalLines, setTerminalLines] = useState<{ text: string, status: 'busy' | 'ok' }[]>([]);
     const [progress, setProgress] = useState(0);
+    const [breachText, setBreachText] = useState("");
+    const [glitchIntensity, setGlitchIntensity] = useState(0);
     const audioContextRef = useRef<AudioContext | null>(null);
     const soundEnabledRef = useRef(true);
+    const wordSoundTimeoutsRef = useRef<number[]>([]);
+
+    const clearWordSoundTimeouts = () => {
+        wordSoundTimeoutsRef.current.forEach(clearTimeout);
+        wordSoundTimeoutsRef.current = [];
+    };
+
+    const isWordStart = (text: string, index: number) => {
+        if (index < 0 || index >= text.length) return false;
+        const char = text[index];
+        if (char === ' ' || char === '\n') return false;
+        return index === 0 || text[index - 1] === ' ' || text[index - 1] === '\n';
+    };
+
+    const scheduleWordSounds = (line: string, interval = 120) => {
+        if (!soundEnabledRef.current) return;
+        const words = line.split(/\s+/).filter(Boolean);
+        words.forEach((_, idx) => {
+            const timeout = window.setTimeout(() => createHackerSound(audioContextRef.current), idx * interval);
+            wordSoundTimeoutsRef.current.push(timeout);
+        });
+    };
 
     // Initialize audio context on first user interaction
     useEffect(() => {
@@ -85,11 +151,14 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
         // Phase 0: Shock Intro
         if (phase === 0) {
             const timer = setTimeout(() => setPhase(1), 1800);
-            // Play keyboard click when SURPRISE appears
+            // Play hacker sound when SURPRISE appears
             if (soundEnabledRef.current) {
-                createKeyboardClick(audioContextRef.current);
+                createHackerSound(audioContextRef.current);
             }
-            return () => clearTimeout(timer);
+            return () => {
+                clearTimeout(timer);
+                clearWordSoundTimeouts();
+            };
         }
 
         // Phase 1: Three-Stage Character reveal
@@ -97,9 +166,9 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
             let i = 0;
             const typeLine1 = setInterval(() => {
                 setText1(line1.slice(0, i + 1));
-                // Play keyboard click for each character
-                if (soundEnabledRef.current) {
-                    createKeyboardClick(audioContextRef.current);
+                // Play hacker sound for each character
+                if (soundEnabledRef.current && isWordStart(line1, i)) {
+                    createHackerSound(audioContextRef.current);
                 }
                 i++;
                 if (i >= line1.length) {
@@ -108,9 +177,9 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                         let j = 0;
                         const typeLine2 = setInterval(() => {
                             setText2(line2.slice(0, j + 1));
-                            // Play keyboard click for each character
-                            if (soundEnabledRef.current) {
-                                createKeyboardClick(audioContextRef.current);
+                            // Play hacker sound for each character
+                            if (soundEnabledRef.current && isWordStart(line2, j)) {
+                                createHackerSound(audioContextRef.current);
                             }
                             j++;
                             if (j >= line2.length) {
@@ -120,9 +189,9 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                                     let k = 0;
                                     const typeSignal = setInterval(() => {
                                         setTextSignal(signalLine.slice(0, k + 1));
-                                        // Play keyboard click for each character
-                                        if (soundEnabledRef.current) {
-                                            createKeyboardClick(audioContextRef.current);
+                                        // Play hacker sound for each character
+                                        if (soundEnabledRef.current && isWordStart(signalLine, k)) {
+                                            createHackerSound(audioContextRef.current);
                                         }
                                         k++;
                                         if (k >= signalLine.length) {
@@ -137,7 +206,10 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                     }, 500);
                 }
             }, 100);
-            return () => clearInterval(typeLine1);
+            return () => {
+                clearInterval(typeLine1);
+                clearWordSoundTimeouts();
+            };
         }
 
         // Phase 2: Terminal sequence
@@ -152,10 +224,8 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
             lines.forEach((line, index) => {
                 setTimeout(() => {
                     setTerminalLines(prev => [...prev, { text: line, status: 'busy' }]);
-                    // Play keyboard click when terminal line appears
-                    if (soundEnabledRef.current) {
-                        createKeyboardClick(audioContextRef.current);
-                    }
+                    // Play hacker-style sound for each word in the terminal line
+                    scheduleWordSounds(line, 120);
                     setTimeout(() => {
                         setTerminalLines(prev =>
                             prev.map(l => l.text === line ? { ...l, status: 'ok' } : l)
@@ -172,23 +242,78 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                     }
 
                     if (soundEnabledRef.current) {
-                        createKeyboardClick(audioContextRef.current);
+                        createHackerSound(audioContextRef.current);
                     }
 
                     return prev + 4;
                 });
             }, 80);
 
-            setTimeout(() => setPhase(3), 2500);
+            const phase2Timer = setTimeout(() => setPhase(2.5), 2500);
+            return () => {
+                clearInterval(progressInterval);
+                clearTimeout(phase2Timer);
+                clearWordSoundTimeouts();
+            };
+        }
+
+        // Phase 2.5: Breach Completion
+        if (phase === 2.5) {
+            const breachLines = [
+                "ACCESS GRANTED",
+                "CORE BREACH ESTABLISHED",
+                "SYSTEM OVERRIDE"
+            ];
+
+            let breachIndex = 0;
+            const breakInterval = setInterval(() => {
+                if (breachIndex < breachLines.length) {
+                    const line = breachLines[breachIndex];
+                    setBreachText(line);
+                    // Ambient pulse for each breach line
+                    createAmbientPulse(audioContextRef.current, 65 + breachIndex * 20);
+                    breachIndex++;
+                } else {
+                    clearInterval(breakInterval);
+                }
+            }, 800);
+
+            // Glitch intensity animation
+            const glitchInterval = setInterval(() => {
+                setGlitchIntensity(prev => {
+                    if (prev >= 3) {
+                        clearInterval(glitchInterval);
+                        return 3;
+                    }
+                    return prev + 1;
+                });
+            }, 300);
+
+            // Play glitch hit at completion
+            setTimeout(() => {
+                if (soundEnabledRef.current) {
+                    createGlitchHit(audioContextRef.current);
+                }
+            }, 2000);
+
+            const phase25Timer = setTimeout(() => setPhase(3), 3200);
+            return () => {
+                clearInterval(breakInterval);
+                clearInterval(glitchInterval);
+                clearTimeout(phase25Timer);
+                clearWordSoundTimeouts();
+            };
         }
 
         // Phase 3: Final Welcome
         if (phase === 3) {
-            // Play keyboard click when welcome message appears
-            if (soundEnabledRef.current) {
-                createKeyboardClick(audioContextRef.current);
-            }
-            setTimeout(onFinish, 1200);
+            // Play hacker-style pulse for each word in the welcome message
+            scheduleWordSounds("Welcome to Sarif tachamo's Web", 150);
+            const finishTimer = setTimeout(onFinish, 1200);
+            return () => {
+                clearTimeout(finishTimer);
+                clearWordSoundTimeouts();
+            };
         }
     }, [phase, onFinish]);
 
@@ -337,7 +462,86 @@ export default function LoadingScreen({ onFinish }: { onFinish: () => void }) {
                     </motion.div>
                 )}
 
+                {phase === 2.5 && (
+                    <motion.div
+                        key="phase25"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 1.1, filter: "blur(8px)" }}
+                        className="text-center relative z-10"
+                    >
+                        {/* Glitch scanlines background */}
+                        <div 
+                            className="absolute inset-0 pointer-events-none opacity-30"
+                            style={{
+                                backgroundImage: `repeating-linear-gradient(
+                                    0deg,
+                                    transparent,
+                                    transparent 2px,
+                                    rgba(255, 0, 60, 0.15) 2px,
+                                    rgba(255, 0, 60, 0.15) 4px
+                                )`,
+                                animation: `glitch-scan 0.15s infinite`
+                            }}
+                        />
+                        
+                        {/* Green scanlines */}
+                        <div 
+                            className="absolute inset-0 pointer-events-none opacity-20"
+                            style={{
+                                backgroundImage: `repeating-linear-gradient(
+                                    90deg,
+                                    transparent,
+                                    transparent 3px,
+                                    rgba(0, 255, 65, 0.1) 3px,
+                                    rgba(0, 255, 65, 0.1) 6px
+                                )`
+                            }}
+                        />
+
+                        <motion.div
+                            animate={{ y: [0, -2, 0] }}
+                            transition={{ duration: 0.1, repeat: Infinity }}
+                            className="text-5xl md:text-7xl font-black font-ops tracking-wider"
+                            style={{
+                                textShadow: `
+                                    0 0 10px rgba(0,255,65,${0.8 + glitchIntensity * 0.1}),
+                                    2px 2px 0 rgba(255,0,60,${glitchIntensity * 0.2}),
+                                    -2px -2px 0 rgba(0,255,100,${glitchIntensity * 0.15})
+                                `,
+                                color: glitchIntensity > 1 ? `hsl(120, 100%, ${50 + glitchIntensity * 5}%)` : '#00FF41'
+                            }}
+                        >
+                            {breachText}
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                            className="h-1 bg-neon-green mt-6 shadow-[0_0_15px_rgba(0,255,65,0.8)] origin-left"
+                        />
+
+                        {/* Glitch bars */}
+                        {glitchIntensity > 0 && (
+                            <>
+                                <motion.div
+                                    animate={{ width: [0, 30, 0] }}
+                                    transition={{ duration: 0.4, repeat: Infinity }}
+                                    className="h-0.5 bg-neon-red mt-8 ml-auto mr-12"
+                                />
+                                <motion.div
+                                    animate={{ width: [0, 50, 0] }}
+                                    transition={{ duration: 0.5, repeat: Infinity, delay: 0.1 }}
+                                    className="h-0.5 bg-neon-cyan mt-4 ml-12"
+                                />
+                            </>
+                        )}
+                    </motion.div>
+                )}
+
                 {phase === 3 && (
+
                     <motion.div
                         key="phase3"
                         initial={{ opacity: 0, scale: 0.9 }}
