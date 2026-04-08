@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
   <url>
-    <loc>https://yourdomain.com/</loc>
+    <loc>https://sariftachamo.com.np/</loc>
     <lastmod>2026-04-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -10,7 +10,7 @@
   
   <!-- Cryptography Lab -->
   <url>
-    <loc>https://yourdomain.com/cryptography</loc>
+    <loc>https://sariftachamo.com.np/cryptography</loc>
     <lastmod>2026-04-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -18,7 +18,7 @@
   
   <!-- Admin Portal -->
   <url>
-    <loc>https://yourdomain.com/login</loc>
+    <loc>https://sariftachamo.com.np/login</loc>
     <lastmod>2026-04-08</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
