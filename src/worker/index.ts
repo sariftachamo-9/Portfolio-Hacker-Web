@@ -4,7 +4,8 @@ import { cors } from "hono/cors";
 type Env = {
   Bindings: {
     DB: D1Database;
-    R2: R2Bucket;
+    R2?: R2Bucket;
+    ASSETS: { fetch: typeof fetch };
     JWT_SECRET: string;
   };
 };
@@ -127,10 +128,12 @@ app.post("/api/projects", async (c) => {
   const imageFile = formData.get("image") as File | null;
 
   let imagePath: string | null = null;
-  if (imageFile && imageFile.size > 0) {
+  if (imageFile && imageFile.size > 0 && c.env.R2) {
     const key = `uploads/${Date.now()}-${imageFile.name}`;
     await c.env.R2.put(key, imageFile.stream());
     imagePath = `/${key}`;
+  } else if (imageFile && imageFile.size > 0 && !c.env.R2) {
+    console.warn("R2_NOT_CONFIGURED: Skipping image upload.");
   }
 
   const result = await c.env.DB.prepare(
@@ -154,10 +157,12 @@ app.put("/api/projects/:id", async (c) => {
   const imageFile = formData.get("image") as File | null;
 
   let imagePath: string | null = null;
-  if (imageFile && imageFile.size > 0) {
+  if (imageFile && imageFile.size > 0 && c.env.R2) {
     const key = `uploads/${Date.now()}-${imageFile.name}`;
     await c.env.R2.put(key, imageFile.stream());
     imagePath = `/${key}`;
+  } else if (imageFile && imageFile.size > 0 && !c.env.R2) {
+    console.warn("R2_NOT_CONFIGURED: Skipping image upload.");
   }
 
   if (imagePath) {
@@ -333,10 +338,12 @@ app.post("/api/posts", async (c) => {
   const imageFile = formData.get("image") as File | null;
 
   let imagePath: string | null = null;
-  if (imageFile && imageFile.size > 0) {
+  if (imageFile && imageFile.size > 0 && c.env.R2) {
     const key = `uploads/${Date.now()}-${imageFile.name}`;
     await c.env.R2.put(key, imageFile.stream());
     imagePath = `/${key}`;
+  } else if (imageFile && imageFile.size > 0 && !c.env.R2) {
+    console.warn("R2_NOT_CONFIGURED: Skipping image upload.");
   }
 
   const result = await c.env.DB.prepare(
@@ -359,10 +366,12 @@ app.put("/api/posts/:id", async (c) => {
   const imageFile = formData.get("image") as File | null;
 
   let imagePath: string | null = null;
-  if (imageFile && imageFile.size > 0) {
+  if (imageFile && imageFile.size > 0 && c.env.R2) {
     const key = `uploads/${Date.now()}-${imageFile.name}`;
     await c.env.R2.put(key, imageFile.stream());
     imagePath = `/${key}`;
+  } else if (imageFile && imageFile.size > 0 && !c.env.R2) {
+    console.warn("R2_NOT_CONFIGURED: Skipping image upload.");
   }
 
   if (imagePath) {
@@ -409,6 +418,9 @@ app.get("/api/messages", async (c) => {
 
 // --- UPLOAD PROXY (serve R2 files) ---
 app.get("/uploads/:key", async (c) => {
+  if (!c.env.R2) {
+    return c.json({ error: "R2_NOT_CONFIGURED" }, 503);
+  }
   const key = `uploads/${c.req.param("key")}`;
   const object = await c.env.R2.get(key);
   if (!object) {
@@ -509,5 +521,11 @@ async function verifyPassword(
   const { compare } = await import("bcryptjs");
   return compare(password, hash);
 }
+
+// --- SPA FALLBACK ---
+// Proxy all non-API requests to the Cloudflare Assets handler
+app.get("*", async (c) => {
+  return c.env.ASSETS.fetch(c.req.raw);
+});
 
 export default app;

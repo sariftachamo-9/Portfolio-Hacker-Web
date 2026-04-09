@@ -9,12 +9,13 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "portfolio-db"
-database_id = "YOUR_D1_DATABASE_ID"
+database_id = "044c374f-8a9c-4e33-9113-e0ca2b3859a8"
 
-[[r2_buckets]]
-binding = "R2"
-bucket_name = "portfolio-uploads"
+# [[r2_buckets]]
+# binding = "R2"
+# bucket_name = "portfolio-uploads"
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"
 not_found_handling = "single-page-application"
